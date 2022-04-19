@@ -35,7 +35,7 @@ class LoginPacket extends DataPacket {
 	/** @type {string} */
 	serverAddress;
 	/** @type {string} */
-	locale;
+	languageCode;
 	/** @type {any} */
 	chainData;
 	/** @type {string} */
@@ -66,8 +66,7 @@ class LoginPacket extends DataPacket {
 			let webtoken = Utils.decodeJWT(chain);
 			if (typeof webtoken["extraData"] !== "undefined") {
 				if (hasExtraData) {
-					// error to handle
-					console.log("Found 'extraData' multiple times in key chain");
+					throw new Error("Found 'extraData' multiple times in key chain");
 				}
 
 				hasExtraData = true;
@@ -94,7 +93,7 @@ class LoginPacket extends DataPacket {
 		this.clientId = this.clientData["ClientRandomId"] ? this.clientData["ClientRandomId"] : null;
 		this.serverAddress = this.clientData["ServerAddress"] ? this.clientData["ServerAddress"] : null;
 
-		this.locale = this.clientData["LanguageCode"] ? this.clientData["LanguageCode"] : null;
+		this.languageCode = this.clientData["LanguageCode"] ? this.clientData["LanguageCode"] : null;
 	}
 
 	handle(handler) {

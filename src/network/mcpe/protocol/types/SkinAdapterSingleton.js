@@ -29,7 +29,7 @@ class SkinAdapterSingleton {
 	}
 
 	/**
-	 * @param adapter {LegacySkinAdapter}
+	 * @param {LegacySkinAdapter} adapter
 	 */
 	static set(adapter) {
 		this.#instance = adapter;

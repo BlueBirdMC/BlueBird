@@ -13,50 +13,62 @@
  * \ @author BlueBirdMC Team /            *
 \******************************************/
 
-const PlayerNetworkSession = require("../network/mcpe/PlayerNetworkSession");
-const ProtocolInfo = require("../network/mcpe/protocol/Identifiers");
-const PlayStatusPacket = require("../network/mcpe/protocol/PlayStatusPacket");
-const StartGamePacket = require("../network/mcpe/protocol/StartGamePacket");
-const ResourcePackClientResponsePacket = require("../network/mcpe/protocol/ResourcePackClientResponsePacket");
-const ResourcePackStackPacket = require("../network/mcpe/protocol/ResourcePackStackPacket");
-const TextFormat = require("../utils/TextFormat");
-const ResourcePacksInfoPacket = require("../network/mcpe/protocol/ResourcePacksInfoPacket");
-const BiomeDefinitionListPacket = require("../network/mcpe/protocol/BiomeDefinitionListPacket");
-const CreativeContentPacket = require("../network/mcpe/protocol/CreativeContentPacket");
-const TextPacket = require("../network/mcpe/protocol/TextPacket");
-const SetTitlePacket = require("../network/mcpe/protocol/SetTitlePacket");
-const DisconnectPacket = require("../network/mcpe/protocol/DisconnectPacket");
-const Config = require("../utils/Config");
-const PlayerSkinPacket = require("../network/mcpe/protocol/PlayerSkinPacket");
-const UUID = require("../utils/UUID");
-const SkinAdapterSingleton = require("../network/mcpe/protocol/types/SkinAdapterSingleton");
-const SkinImage = require("../network/mcpe/protocol/types/SkinImage");
-const SkinAnimation = require("../network/mcpe/protocol/types/SkinAnimation");
-const PersonaSkinPiece = require("../network/mcpe/protocol/types/PersonaSkinPiece");
-const PersonaPieceTintColor = require("../network/mcpe/protocol/types/PersonaPieceTintColor");
-const SkinData = require("../network/mcpe/protocol/types/SkinData");
-const Entity = require("../entity/Entity");
-const AvailableActorIdentifiersPacket = require("../network/mcpe/protocol/AvailableActorIdentifiersPacket");
-const Utils = require("../utils/Utils");
+const PlayerNetworkSession = require("./network/mcpe/PlayerNetworkSession");
+const ProtocolInfo = require("./network/mcpe/protocol/Identifiers");
+const PlayStatusPacket = require("./network/mcpe/protocol/PlayStatusPacket");
+const StartGamePacket = require("./network/mcpe/protocol/StartGamePacket");
+const ResourcePackClientResponsePacket = require("./network/mcpe/protocol/ResourcePackClientResponsePacket");
+const ResourcePackStackPacket = require("./network/mcpe/protocol/ResourcePackStackPacket");
+const TextFormat = require("./utils/TextFormat");
+const ResourcePacksInfoPacket = require("./network/mcpe/protocol/ResourcePacksInfoPacket");
+const BiomeDefinitionListPacket = require("./network/mcpe/protocol/BiomeDefinitionListPacket");
+const CreativeContentPacket = require("./network/mcpe/protocol/CreativeContentPacket");
+const TextPacket = require("./network/mcpe/protocol/TextPacket");
+const SetTitlePacket = require("./network/mcpe/protocol/SetTitlePacket");
+const DisconnectPacket = require("./network/mcpe/protocol/DisconnectPacket");
+const UUID = require("./utils/UUID");
+const SkinAdapterSingleton = require("./network/mcpe/protocol/types/SkinAdapterSingleton");
+const SkinImage = require("./network/mcpe/protocol/types/SkinImage");
+const SkinAnimation = require("./network/mcpe/protocol/types/SkinAnimation");
+const PersonaSkinPiece = require("./network/mcpe/protocol/types/PersonaSkinPiece");
+const PersonaPieceTintColor = require("./network/mcpe/protocol/types/PersonaPieceTintColor");
+const SkinData = require("./network/mcpe/protocol/types/SkinData");
+const Utils = require("./utils/Utils");
+const Skin = require("./entity/Skin");
+const { Connection } = require("bbmc-raknet");
+const Server = require("./Server");
+const LoginPacket = require("./network/mcpe/protocol/LoginPacket");
+const DataPacket = require("./network/mcpe/protocol/DataPacket");
+const Human = require("./entity/Human");
 
-class Player extends Entity {
+class Player extends Human {
 
+	/** @type {string} */
 	username = "";
+	/** @type {Boolean} */
 	loggedIn = false;
-	locale = "en_US";
-	skin;
+	/** @type {string} */
+	languageCode = "en_US";
+	/** @type {UUID} */
 	uuid;
-	address;
+	/** @type {PlayerNetworkSession} */
 	networkSession;
+	/** @type {string} */
 	xuid;
+	/** @type {number} */
 	clientId;
+	/** @type {Boolean} */
 	authorized;
+	/** @type {Connection} */
 	connection;
 
+	/**
+	 * @param {Server} server 
+	 * @param {Connection} connection 
+	 */
 	constructor(server, connection) {
-		super();
+		super(server, null);
 		this.server = server;
-		this.address = connection.address;
 		this.connection = connection;
 		this.networkSession = new PlayerNetworkSession(this);
 	}
@@ -69,32 +81,34 @@ class Player extends Entity {
 		return this.networkSession;
 	}
 
+	/**
+	 * @returns {Boolean}
+	 */
 	isConnected() {
 		return this.networkSession !== null;
 	}
 
+	/**
+	 * @param {Skin} skin 
+	 * @param {string} oldSkinName 
+	 * @param {string} newSkinName 
+	 * @returns {void}
+	 */
 	changeSkin(skin, oldSkinName, newSkinName) {
 		if (!skin.isValid()) {
 			return;
 		}
 
+		// this.server.broadcastMessage(`${this.getName()} changed his skin from ${oldSkinName} to ${newSkinName}`);
+
 		this.setSkin(skin);
-		this.sendSkin();
+		this.sendSkin(this.server.getOnlinePlayers());
 	}
 
-	sendSkin(targets_1 = null) {
-		let targets = targets_1 === null ? this.server.getOnlinePlayers() : targets_1;
-		let pk = new PlayerSkinPacket();
-		pk.uuid = this.uuid;
-		pk.skin = SkinAdapterSingleton.get().toSkinData(this.skin);
-		this.server.broadcastPacket(targets, pk);
-	}
-
-	setSkin(skin) {
-		skin.validate();
-		this.skin = skin;
-	}
-
+	/**
+	 * @param {LoginPacket} packet 
+	 * @returns {void}
+	 */
 	handleLogin(packet) {
 		if (packet.protocol !== ProtocolInfo.CURRENT_PROTOCOL) {
 			if (packet.protocol < ProtocolInfo.CURRENT_PROTOCOL) {
@@ -110,13 +124,13 @@ class Player extends Entity {
 		this.username = TextFormat.clean(packet.username);
 		this.clientId = packet.clientId;
 
-		if (packet.locale !== null) {
-			this.locale = packet.locale;
+		if (packet.languageCode !== null) {
+			this.languageCode = packet.languageCode;
 		}
 
 		this.uuid = UUID.fromString(packet.clientUUID);
 
-		/*let animations = [];
+		let animations = [];
 
 		packet.clientData["AnimatedImageData"].forEach(animation => {
 			animations.push(new SkinAnimation(
@@ -176,7 +190,7 @@ class Player extends Entity {
 			packet.clientData["PremiumSkin"] ? packet.clientData["PremiumSkin"] : false,
 			packet.clientData["PersonaSkin"] ? packet.clientData["PersonaSkin"] : false,
 			packet.clientData["CapeOnClassicSkin"] ? packet.clientData["CapeOnClassicSkin"] : false,
-			true,
+			true
 		);
 
 		let skin;
@@ -189,11 +203,16 @@ class Player extends Entity {
 			return;
 		}
 
-		this.setSkin(skin);*/
+		// this.changeSkin(skin, "", "");
+		this.setSkin(skin);
 
 		this.onVerifyCompleted(packet, null, true);
 	}
 
+	/**
+	 * @param {ResourcePackClientResponsePacket} packet 
+	 * @returns {Boolean}
+	 */
 	handleResourcePackClientResponse(packet) {
 		switch (packet.status) {
 			case ResourcePackClientResponsePacket.STATUS_REFUSED:
@@ -217,15 +236,20 @@ class Player extends Entity {
 				this.sendDataPacket(start_game_packet);
 
 				this.sendDataPacket(new BiomeDefinitionListPacket());
-				this.sendDataPacket(new AvailableActorIdentifiersPacket());
 				this.sendDataPacket(new CreativeContentPacket());
 
 				this.sendPlayStatus(PlayStatusPacket.PLAYER_SPAWN);
 				break;
 		}
-		return true;
 	}
 
+	/**
+	 * 
+	 * @param {LoginPacket} packet 
+	 * @param {string} error 
+	 * @param {Boolean} signedByMojang 
+	 * @returns {void}
+	 */
 	onVerifyCompleted(packet, error, signedByMojang) {
 		if (error !== null) {
 			this.close("Invalid session");
@@ -233,13 +257,12 @@ class Player extends Entity {
 		}
 
 		let xuid = packet.xuid;
-		let cfg = new Config("BlueBird.json", Config.JSON);
 
-		if (!signedByMojang && xuid !== "") {
-			this.server.getLogger().info(this.username + " has an XUID, but their login keychain is not signed by Mojang");
+		if (!signedByMojang && xuid) {
+			this.server.getLogger().info(`${this.username} has an XUID, but his login keychain is not signed by microsoft`);
 			this.authorized = false;
-			if (cfg.get("xbox-auth") === true) {
-				this.server.getLogger().debug(this.username + " is not logged into Xbox Live");
+			if (this.server.bluebirdcfg.get("xbox-auth") === true) {
+				this.server.getLogger().debug(`${this.username} is not logged into Xbox Live`);
 				this.close("To join this server you must login to your xbox account");
 				return;
 			}
@@ -248,21 +271,22 @@ class Player extends Entity {
 
 		if (!this.username) {
 			this.close("Username is required");
+			return;
 		}
 
-		if (xuid === "" || !xuid instanceof String) {
+		if (!xuid || !xuid instanceof String) {
 			if (signedByMojang) {
-				this.server.getLogger().warning(this.username + " tried to join without XUID");
+				this.server.getLogger().warning(`${this.username} tried to join without XUID`);
 				this.authorized = false;
-				if (cfg.get("xbox-auth") === true) {
+				if (this.server.bluebirdcfg.get("xbox-auth") === true) {
 					this.close("To join this server you must login to your xbox account");
 					return;
 				}
 			}
-			this.server.getLogger().debug(this.username + " is not logged into Xbox Live");
+			this.server.getLogger().debug(`${this.username} is not logged in xbox Live`);
 		} else {
 			this.authorized = true;
-			this.server.getLogger().debug(this.username + " is logged into Xbox Live");
+			this.server.getLogger().debug(`${this.username} is logged in xbox Live`);
 		}
 
 		this.xuid = xuid;
@@ -277,30 +301,33 @@ class Player extends Entity {
 		packsInfo.forceServerPacks = false;
 		this.sendDataPacket(packsInfo);
 
-		this.server.getLogger().info("Player " + this.username + " joined the game");
-		this.server.broadcastMessage("§ePlayer " + this.username + " joined the game");
+		this.server.getLogger().info(`Player ${this.username} joined the game`);
+		this.server.broadcastMessage(`§ePlayer ${this.username} joined the game`);
 	}
 
-	handleText(packet) {
-		if (packet.type === TextPacket.TYPE_CHAT) {
-			let message = TextFormat.clean(packet.message);
-			message = message.split("\n");
-			for (let i in message) {
-				let messageElement = message[i];
-				if (messageElement.trim() !== "" && messageElement.length <= 255) {
-					if (messageElement.startsWith("/")) {
-						//TODO: Add player commands
-						return false;
-					}
-					let msg = "<:player> :message".replace(":player", this.getName()).replace(":message", messageElement);
-					this.server.broadcastMessage(msg);
-					this.server.getLogger().info(msg);
+	/**
+	 * @param {string} message 
+	 * @returns {void}
+	 */
+	chat(message) {
+		message = message.split("\n");
+		for (let i in message) {
+			let messageElement = message[i];
+			if (messageElement.trim() !== "" && messageElement.length <= 255) {
+				if (messageElement.startsWith("/")) {
+					//TODO: Send Command Packet
+					return;
 				}
+				let msg = "<:player> :message".replace(":player", this.getName()).replace(":message", messageElement);
+				this.server.broadcastMessage(msg);
+				this.server.getLogger().info(msg);
 			}
-			return true;
 		}
 	}
 
+	/**
+	 * @param {string} message 
+	 */
 	sendMessage(message) {
 		let pk = new TextPacket();
 		pk.type = TextPacket.TYPE_RAW;
@@ -308,6 +335,13 @@ class Player extends Entity {
 		this.sendDataPacket(pk);
 	}
 
+	/**
+	 * @param {string} title 
+	 * @param {string} subtitle 
+	 * @param {number} fadeIn 
+	 * @param {number} stay 
+	 * @param {number} fadeOut 
+	 */
 	sendTitle(title, subtitle = "", fadeIn = -1, stay = -1, fadeOut = -1) {
 		this.setTitleDuration(fadeIn, stay, fadeOut);
 		if (subtitle !== "") {
@@ -316,22 +350,32 @@ class Player extends Entity {
 		this.sendTitleText(title, SetTitlePacket.TYPE_SET_TITLE);
 	}
 
+	/**
+	 * @param {string} subtitle 
+	 */
 	sendSubTitle(subtitle) {
 		this.sendTitleText(subtitle, SetTitlePacket.TYPE_SET_SUBTITLE);
 	}
 
+	/** clear the player titles */
 	clearTitles() {
 		let pk = new SetTitlePacket();
 		pk.type = SetTitlePacket.TYPE_CLEAR_TITLE;
 		this.sendDataPacket(pk);
 	}
 
+	/** reset the player titles */
 	resetTitles() {
 		let pk = new SetTitlePacket();
 		pk.type = SetTitlePacket.TYPE_RESET_TITLE;
 		this.sendDataPacket(pk);
 	}
 
+	/**
+	 * @param {number} fadeIn 
+	 * @param {number} stay 
+	 * @param {number} fadeOut 
+	 */
 	setTitleDuration(fadeIn, stay, fadeOut) {
 		if (fadeIn >= 0 && stay >= 0 && fadeOut >= 0) {
 			let pk = new SetTitlePacket();
@@ -343,6 +387,10 @@ class Player extends Entity {
 		}
 	}
 
+	/**
+	 * @param {string} title 
+	 * @param {number} type 
+	 */
 	sendTitleText(title, type) {
 		let pk = new SetTitlePacket();
 		pk.type = type;
@@ -350,12 +398,20 @@ class Player extends Entity {
 		this.sendDataPacket(pk);
 	}
 
+	/**
+	 * @param {number} status 
+	 * @param {Boolean} immediate 
+	 */
 	sendPlayStatus(status, immediate = false) {
 		let play_status_packet = new PlayStatusPacket();
 		play_status_packet.status = status;
 		this.sendDataPacket(play_status_packet, immediate);
 	}
 
+	/**
+	 * @param {string} reason 
+	 * @param {Boolean} hide_disconnection_screen 
+	 */
 	close(reason, hide_disconnection_screen = false) {
 		this.server.getLogger().info("Player " + this.username + " disconnected due to " + reason);
 		this.server.broadcastMessage("§ePlayer " + this.username + " left the game");
@@ -366,31 +422,55 @@ class Player extends Entity {
 		this.connection.disconnect(reason);
 	}
 
+	kick(reason, by){
+		this.close(`Kicked by ${by}, reason: ${reason}`);
+	}
+
+	/**
+	 * @returns {string}
+	 */
 	getXuid() {
 		return this.xuid;
 	}
 
+	/**
+	 * @returns {number}
+	 */
 	getClientId() {
 		return this.clientId;
 	}
 
+	/**
+	 * @returns {Boolean}
+	 */
 	isAuthorized() {
 		return this.authorized;
 	}
 
+	/**
+	 * @returns {UUID}
+	 */
 	getUUID() {
 		return this.uuid;
 	}
 
+	/**
+	 * @returns {string}
+	 */
 	getName() {
 		return this.username;
 	}
 
+	/**
+	 * @param {DataPacket} packet 
+	 * @param {Boolean} immediate 
+	 * @returns {void}
+	 */
 	sendDataPacket(packet, immediate = false) {
-		if (!this.isConnected()) return false;
+		if (!this.isConnected()) return;
 
 		if (!this.loggedIn && !packet.canBeSentBeforeLogin) {
-			throw new Error("Attempted to send " + packet.getName() + " to " + this.getName() + " before they got logged in.");
+			throw new Error(`Attempted to send ${packet.getName()} to ${this.networkSession.toString()} before he got logged in`);
 		}
 
 		this.server.raknet.queuePacket(this, packet, immediate);

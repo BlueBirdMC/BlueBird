@@ -13,179 +13,113 @@
  * \ @author BlueBirdMC Team /            *
  \******************************************/
 
-const FileSystem = require("fs");
-const Path = require("path");
+ const fs = require("fs");
 
 class Config {
-	static DETECT = 0;
-	static JSON = 1;
+	static TYPE_JSON = 0;
 
-	correct;
 	file;
 	type;
-	config;
+	content;
 
-	/**
-	 * @param file {String}
-	 * @param type {Number}
-	 * @param def  {Object}
-	 */
-	constructor(file, type, def = {}) {
-		this.load(file, type, def);
+	constructor(file, type, content = {}) {
+		this.#load(file, type, content);
 	}
 
-	load(file, type = Config.DETECT, def = {}) {
-		this.correct = true;
+	#load(file, type, content) {
 		this.file = file;
 		this.type = type;
-
-		if (!(def instanceof Object)) {
-			def = {};
-		}
-		if (!FileSystem.existsSync(file)) {
-			this.config = def;
+		let nc;
+		if (!fs.existsSync(file)) {
+			this.content = content;
 			this.save();
 		} else {
-			if (this.type === Config.DETECT) {
-				switch (Path.extname(this.file)) {
-					case ".json":
-						this.type = Config.JSON;
-						break;
-				}
+			nc = fs.readFileSync(file).toString();
+			switch(type){
+				case Config.TYPE_JSON:
+					nc = eval(`(${nc})`);
+					break;
+				default:
+					break;
 			}
+		}
+		this.content = Object.assign({}, content, nc);
+	}
 
-			if (this.correct === true) {
-				let content = FileSystem.readFileSync(this.file, {encoding: "utf-8"});
-				switch (this.type) {
-					case Config.JSON:
-						this.config = eval("(" + content + ")");
-						break;
-					default:
-						this.correct = false;
-						return false;
-				}
+	set(l, v) {
+		this.content[l] = v;
+	}
 
-				if (!(this.config instanceof Object)) {
-					this.config = def;
-				}
+	get(l) {
+		return typeof this.content[l] !== "undefined" ? this.content[l] : false;
+	}
 
-				this.config = this.fillDefaults(def, this.config);
-				this.save();
+	setNested(l, v) {
+		let vars = l.split(".");
+		let base = vars.shift();
+		if (typeof this.content[base] === "undefined") {
+			this.content[base] = {};
+		}
+		base = this.content[base];
+		while (vars.length > 0) {
+			let basel = vars.shift();
+			if (typeof this.content[basel] === "undefined") {
+				base[basel] = {};
+			}
+			if (vars.length > 0) {
+				base = base[basel];
+			} else {
+				base[basel] = v;
+			}
+		}
+	}
+
+	getNested(l) {
+		let vars = l.split(".");
+		let base = vars.shift();
+		if (typeof this.content[base] !== "undefined") {
+			base = this.content[base];
+		} else {
+			return false;
+		}
+		while (vars.length > 0) {
+			let basel = vars.shift();
+			if (base instanceof Object && typeof base[basel]) {
+				base = base[basel];
 			} else {
 				return false;
 			}
 		}
+
+		return base;
 	}
 
-	reload() {
-		this.config = {};
-		this.correct = false;
-		delete this.type;
-		this.load(this.file);
+	getAll(l = false) {
+		return l ? Object.keys(this.content) : this.content;
+	}
+
+	setAll(content) {
+		this.content = content;
+	}
+
+	remove(l) {
+		delete this.content[l];
+	}
+
+	exists(l) {
+		return this.get(l) !== false;
 	}
 
 	save() {
-		if (this.correct === true) {
-			let content;
-
-			switch (this.type) {
-				case Config.JSON:
-					content = JSON.stringify(this.config, null, 4);
-					break;
-			}
-			FileSystem.writeFileSync(this.file, content);
-			return true;
-		} else {
-			return false;
+		let content;
+		switch(this.type){
+			case Config.TYPE_JSON:
+				content = JSON.stringify(this.content, null, 4);
+				break;
+			default:
+				break;
 		}
-	}
-
-	get(k, def = false) {
-		return this.correct && typeof this.config[k] !== "undefined" ? this.config[k] : def;
-	}
-
-	getNested(k, def) {
-		let parts = k.split(".");
-		if (!this.config[parts[0]]) {
-			return def;
-		}
-
-		let config = this.config[parts.shift()];
-
-		while (parts.length > 0) {
-			let part = parts.shift();
-			if (typeof config[part] !== "undefined") {
-				config = config[part];
-			} else {
-				return def;
-			}
-		}
-
-		return config;
-	}
-
-	getAll(k = false) {
-		return k === true ? Object.keys(this.config) : this.config;
-	}
-
-	set(k, v = true) {
-		this.config[k] = v;
-	}
-
-	setNested(k, v) {
-		let parts = k.split(".");
-		let base = parts.shift();
-
-		if (typeof this.config[base] === "undefined") {
-			this.config[base] = {};
-		}
-
-		base = this.config[base];
-
-		while (parts.length > 0) {
-			let part = parts.shift();
-
-			if (typeof this.config[part] === "undefined") {
-				base[part] = {};
-			}
-
-			if (parts.length > 0) {
-				base = base[part];
-			} else {
-				base[part] = v;
-			}
-		}
-
-		return true;
-	}
-
-	setAll(v) {
-		this.config = v;
-	}
-
-	exists(k, lower) {
-		if (lower === true) {
-			k = k.toLowerCase();
-			let array = Object.keys(this.config).map((k) => {
-				return k.toLowerCase();
-			});
-
-			return typeof array[k] !== "undefined";
-		} else {
-			return typeof this.config[k] !== "undefined";
-		}
-	}
-
-	remove(k) {
-		delete this.config[k];
-	}
-
-	fillDefaults(def, data) {
-		return Object.assign({}, def, data);
-	}
-
-	setDefaults(def) {
-		this.config = this.fillDefaults(def, this.config);
+		fs.writeFileSync(this.file, content);
 	}
 }
 

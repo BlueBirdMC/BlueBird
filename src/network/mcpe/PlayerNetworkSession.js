@@ -13,23 +13,29 @@
  * \ @author BlueBirdMC Team /            *
 \******************************************/
 
+const TextFormat = require("../../utils/TextFormat");
 const DataPacket = require("./protocol/DataPacket");
+const TextPacket = require("./protocol/TextPacket");
 const SkinAdapterSingleton = require("./protocol/types/SkinAdapterSingleton");
 
 class PlayerNetworkSession {
+	/** @type {Server} */
 	server;
+	/** @type {Player} */
 	player;
 
 	/**
-	 * @param player {Player}
+	 * @param {Player} player
 	 */
 	constructor(player) {
-		/** @type {Server} */
 		this.server = player.server;
-		/** @type {Player} */
 		this.player = player;
 	}
 
+	/**
+	 * @param {DataPacket} packet 
+	 * @returns 
+	 */
 	handleDataPacket(packet) {
 		if (!packet instanceof DataPacket) {
 			throw new Error("expected a packet instanceof DataPacket got " + packet);
@@ -50,26 +56,32 @@ class PlayerNetworkSession {
 	}
 
 	handleLogin(packet) {
-		return this.player.handleLogin(packet);
+		this.player.handleLogin(packet);
+		return true;
 	}
 
 	handleText(packet) {
-		return this.player.handleText(packet);
+		if (packet.type === TextPacket.TYPE_CHAT){
+			this.player.chat(TextFormat.clean(packet.message))
+		}
+		return true;
 	}
 
 	handleResourcePackClientResponse(packet) {
-		return this.player.handleResourcePackClientResponse(packet);
+		this.player.handleResourcePackClientResponse(packet);
+		return true;
 	}
 
 	handlePlayerSkin(packet) {
-		return this.player.changeSkin(SkinAdapterSingleton.get().fromSkinData(packet.skin), packet.oldSkinName, packet.newSkinName);
+		this.player.changeSkin(SkinAdapterSingleton.get().fromSkinData(packet.skin), packet.oldSkinName, packet.skinName);
+		return true;
 	}
 
 	/**
 	 * @return {String}
 	 */
 	toString() {
-		return this.player.getName() !== "" ? this.player.getName() : this.player.address.toString();
+		return this.player.getName() !== "" ? this.player.getName() : this.player.connection.address.toString();
 	}
 }
 

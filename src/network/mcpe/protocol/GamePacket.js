@@ -16,19 +16,23 @@
 const DataPacket = require("./DataPacket");
 const assert = require("assert");
 const Zlib = require("zlib");
-const BinaryStream = require("../../NetworkBinaryStream");
 const PacketPool = require("./PacketPool");
 const Identifiers = require("./Identifiers");
+const NetworkBinaryStream = require("../../NetworkBinaryStream");
 
 class GamePacket extends DataPacket {
 	static NETWORK_ID = Identifiers.GAME_PACKET;
 
-	payload = new BinaryStream();
+	/** @type {NetworkBinaryStream} */
+	payload = new NetworkBinaryStream();
 
+	/** @type {number} */
 	compressionLevel = 7;
 
+	/** @type {Boolean} */
 	canBeBatched = false;
 
+	/** @type {Boolean} */
 	canBeSentBeforeLogin = true;
 
 	decodeHeader() {
@@ -39,13 +43,14 @@ class GamePacket extends DataPacket {
 	decodePayload() {
 		let data = this.readRemaining();
 		try {
-			this.payload = new BinaryStream(Zlib.inflateRawSync(data, {
+			this.payload = new NetworkBinaryStream(Zlib.inflateRawSync(data, {
 				level: this.compressionLevel,
 				maxOutputLength: 1024 * 1024 * 2
 			}));
 		} catch (e) {
 			//zlib decode error
-			this.payload = new BinaryStream();
+			console.log(e);
+			this.payload = new NetworkBinaryStream();
 		}
 	}
 
@@ -60,7 +65,7 @@ class GamePacket extends DataPacket {
 
 	addPacket(packet) {
 		if (!packet.canBeBatched) {
-			throw new Error(packet.getName() + " cant be batched");
+			throw new Error(`${packet.getName()} cant be batched`);
 		}
 		if (!packet.isEncoded) {
 			packet.encode();
@@ -71,28 +76,35 @@ class GamePacket extends DataPacket {
 	}
 
 	getPackets() {
-		let pks = [];
+		let packets = [];
+		let count = 0;
 		while (!this.payload.feos()) {
-			pks.push(this.payload.read(this.payload.readVarInt()));
+			if(count++ >= 500){
+				throw new Error("Too many packets");
+			}
+			packets.push(this.payload.read(this.payload.readVarInt()));
 		}
-		return pks;
+		return packets;
 	}
 
 	handle(handler) {
 		if (this.payload.buffer.length === 0) {
 			return false;
 		}
-		this.getPackets().forEach((buf) => {
+		this.getPackets().forEach(buf => {
 			let pk = PacketPool.getPacket(buf[0]);
-			console.log("MINECRAFT PACKET: 0x" + buf.slice(0, 1).toString("hex"));
-			console.log(buf);
 			if (pk instanceof DataPacket) {
 				if (!pk.canBeBatched) {
-					throw new Error("Received invalid " + pk.getName() + " inside GamePacket");
+					throw new Error(`Received invalid ${pk.getName()} inside GamePacket`);
 				}
 				pk.buffer = buf;
 				pk.offset = 1;
 				handler.handleDataPacket(pk);
+			} else {
+				if(_DEBUG === true){
+					console.log(`UNHANDLED PACKET: 0x${buf.slice(0, 1).toString("hex")}`);
+					console.log(buf);
+				}
 			}
 		});
 		return true;

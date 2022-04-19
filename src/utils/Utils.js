@@ -20,6 +20,11 @@ class Utils {
 		return JSON.parse(Utils.base64_decode(payloadB64.replace(/-/g, "+").replace(/_/g, "/"), true));
 	}
 
+	/**
+	 * @param {string} str 
+	 * @param {Boolean} strict 
+	 * @returns {string}
+	 */
 	static base64_decode(str, strict) {
 		let characters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+", "/", "=",];
 		let valid_character = true;
@@ -36,6 +41,10 @@ class Utils {
 		return Buffer.from(str, "base64").toString("binary");
 	}
 
+	/**
+	 * @param {string} str 
+	 * @returns {string}
+	 */
 	static base64_encode(str) {
 		return Buffer.from(str).toString("base64");
 	}

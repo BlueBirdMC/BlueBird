@@ -68,7 +68,8 @@ class Skin {
         }
 
         if(this.#geometryData !== ""){
-            let decodedGeometry = JSON.stringify(JSON.parse(this.#geometryData));
+            let decodedGeometry = JSON.stringify(this.#geometryData);
+            // console.log(decodedGeometry);
             if(decodedGeometry === false){
                 throw new Error("Invalid geometry data");
             }

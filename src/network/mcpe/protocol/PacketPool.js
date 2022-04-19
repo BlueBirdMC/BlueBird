@@ -26,11 +26,10 @@ const SetTitlePacket = require("./SetTitlePacket");
 const DisconnectPacket = require("./DisconnectPacket");
 const PlayerSkinPacket = require("./PlayerSkinPacket");
 const SetLocalPlayerAsInitializedPacket = require("./SetLocalPlayerAsInitializedPacket");
-const AvailableActorIdentifiersPacket = require("./AvailableActorIdentifiersPacket");
 
 class PacketPool {
 
-	static #pool = new Map();
+	static #pool = {};
 
 	static init() {
 		this.registerPacket(LoginPacket);
@@ -45,16 +44,19 @@ class PacketPool {
 		this.registerPacket(SetTitlePacket);
 		this.registerPacket(DisconnectPacket);
 		this.registerPacket(SetLocalPlayerAsInitializedPacket);
-		this.registerPacket(AvailableActorIdentifiersPacket);
-		// this.registerPacket(PlayerSkinPacket);
+		this.registerPacket(PlayerSkinPacket);
 	}
 
 	static registerPacket(packet) {
-		this.#pool.set(packet.NETWORK_ID, packet);
+		if(packet.NETWORK_ID in this.#pool){
+			throw new Error(`Trying to register already registered packet, packetid=${packet.NETWORK_ID}`);
+		}
+		this.#pool[packet.NETWORK_ID] = packet;
 	}
 
 	static getPacket(id) {
-		return this.#pool.has(id) ? new (this.#pool.get(id))() : null;
+		let packet = this.#pool[id];
+		return typeof this.#pool[id] !== "undefined" ? new packet : false;
 	}
 }
 

@@ -31,6 +31,7 @@ class Identifiers {
 	static PLAYER_SKIN_PACKET = 0x5d;
 	static SET_LOCAL_PLAYER_AS_INITIALIZED_PACKET = 0x71;
 	static AVAILABLE_ACTOR_IDENTIFIERS_PACKET = 0x77;
+	static AVAILABLE_COMMANDS_PACKET = 0x4d;
 }
 
 module.exports = Identifiers;

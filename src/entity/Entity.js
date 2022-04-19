@@ -13,13 +13,20 @@
  * \ @author BlueBirdMC Team /            *
  \******************************************/
 
-class Entity {
+const Vector3 = require("../math/Vector3");
+
+class Entity extends Vector3 {
 
     static entityCount = 1;
     id;
 
     constructor() {
-        this.id = Entity.entityCount++;
+        super(0, 4, 0);
+        this.id = Entity.nextRuntimeId();
+    }
+    
+    static nextRuntimeId(){
+        return Entity.entityCount++;
     }
 }
 

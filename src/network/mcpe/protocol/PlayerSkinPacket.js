@@ -20,22 +20,25 @@ class PlayerSkinPacket extends DataPacket {
 	static NETWORK_ID = Identifiers.PLAYER_SKIN_PACKET;
 
 	uuid;
-	oldSkinName;
-	newSkinName;
 	skin;
+	skinName;
+	oldSkinName;
+	isVerified;
 
 	decodePayload() {
 		this.uuid = this.readUUID();
-		this.oldSkinName = this.readString();
-		this.newSkinName = this.readString();
 		this.skin = this.readSkin();
+		this.skinName = this.readString();
+		this.oldSkinName = this.readString();
+		this.isVerified = this.readBool();
 	}
 
 	encodePayload() {
 		this.writeUUID(this.uuid);
-		this.writeString(this.oldSkinName);
-		this.writeString(this.newSkinName);
 		this.writeSkin(this.skin);
+		this.writeString(this.skinName);
+		this.writeString(this.oldSkinName);
+		this.writeBool(this.isVerified);
 	}
 
 	handle(handler) {

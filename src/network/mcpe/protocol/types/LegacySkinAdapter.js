@@ -30,8 +30,9 @@ class LegacySkinAdapter {
 		return new SkinData(
 			skin.getSkinId(),
 			"", //playfabid
-			JSON.stringify({'geometry': {'default': geometryName}}),
-			SkinImage.fromLegacy(skin.getSkinData()), [],
+			JSON.stringify({ "geometry": { "default": geometryName } }),
+			SkinImage.fromLegacy(skin.getSkinData()),
+			[],
 			capeImage,
 			skin.getGeometryData()
 		);
@@ -39,7 +40,7 @@ class LegacySkinAdapter {
 
 	fromSkinData(data) {
 		if (data.isPersona()) {
-			return new Skin('Standard_Custom', crypto.randomBytes(3).toString('hex') + '\xff'.repeat(4096));
+			return new Skin('Standard_Custom', crypto.randomBytes(3).toString('hex') + "\xff".repeat(4096));
 		}
 
 		let capeData = data.isPersonaCapeOnClassic() ? "" : data.getCapeImage().getData();
@@ -50,11 +51,7 @@ class LegacySkinAdapter {
 		if (resourcePatch.constructor === Object && typeof resourcePatch['geometry']['default'] !== 'undefined' && typeof resourcePatch['geometry']['default'] === 'string') {
 			geometryName = resourcePatch['geometry']['default'];
 		} else {
-			geometryName = JSON.stringify({
-				"geometry": {
-					"default": resourcePatch
-				}
-			});
+			throw new Error("Invalid skin/resourcepatch is not the type object, maybe undefined?");
 		}
 
 		return new Skin(data.getSkinId(), data.getSkinImage().getData(), capeData, geometryName, data.getGeometryData());

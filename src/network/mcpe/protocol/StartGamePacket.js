@@ -46,7 +46,7 @@ class StartGamePacket extends DataPacket {
 		this.writeSignedVarInt(0); // Spawn x
 		this.writeVarInt(4); // Spawn y
 		this.writeSignedVarInt(0); // Spawn z
-		this.writeBool(false); // Achievements Disabled
+		this.writeBool(true); // Achievements Disabled
 		this.writeSignedVarInt(0); // Day Cycle Stop Time
 		this.writeSignedVarInt(0); // Edu offser
 		this.writeBool(false); // Edu features enabled

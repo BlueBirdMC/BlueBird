@@ -16,7 +16,7 @@
 const NetworkBinaryStream = require("../../NetworkBinaryStream");
 
 class DataPacket extends NetworkBinaryStream {
-	static NETWORK_ID = 0x00;
+	static NETWORK_ID = 0;
 
 	static PID_MASK = 0x3ff;
 
@@ -79,7 +79,7 @@ class DataPacket extends NetworkBinaryStream {
 	}
 
 	/**
-	 * @param handle {PlayerNetworkSession}
+	 * @param {PlayerNetworkSession} handle
 	 */
 	handle(handle) {
 		return false;

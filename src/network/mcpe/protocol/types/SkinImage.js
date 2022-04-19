@@ -23,8 +23,9 @@ class SkinImage {
 		if (height < 0 || width < 0) {
 			throw new Error("Unknown height and width");
 		}
-		let expected, actual;
-		if ((expected = height * width * 4) !== (actual = data.length)) {
+		let expected = height * width * 4;
+		let actual = data.length;
+		if (expected !== actual) {
 			throw new Error(`Data should be ${expected} got ${actual}`);
 		}
 		this.height = height;

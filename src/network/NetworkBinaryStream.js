@@ -22,18 +22,33 @@ const SkinImage = require("./mcpe/protocol/types/SkinImage");
 
 class NetworkBinaryStream extends require("bbmc-binarystream") {
 	/**
-	 * @return {String}
+	 * @return {string}
 	 */
 	readString() {
 		return this.read(this.readVarInt()).toString();
 	}
 
 	/**
-	 * @param v {String}
+	 * @param {stirng} v
 	 */
 	writeString(v) {
 		this.writeVarInt(Buffer.byteLength(v));
 		this.write(Buffer.from(v, "utf8"));
+	}
+
+	/**
+	 * @return {Buffer}
+	 */
+	readByteArray() {
+		return this.read(this.readVarInt());
+	}
+
+	/**
+	 * @param {Buffer} v
+	 */
+	writeByteArray(v) {
+		this.writeVarInt(v.length);
+		this.write(v);
 	}
 
 	/**
@@ -51,7 +66,7 @@ class NetworkBinaryStream extends require("bbmc-binarystream") {
 	}
 
 	/**
-	 * @param uuid {UUID}
+	 * @param {UUID} uuid
 	 */
 	writeUUID(uuid) {
 		this.writeIntLE(uuid.getPart(1));
@@ -60,6 +75,9 @@ class NetworkBinaryStream extends require("bbmc-binarystream") {
 		this.writeIntLE(uuid.getPart(2));
 	}
 
+	/**
+	 * @returns {SkinData}
+	 */
 	readSkin() {
 		let skinId = this.readString();
 		let skinPlayFabId = this.readString();
@@ -115,7 +133,7 @@ class NetworkBinaryStream extends require("bbmc-binarystream") {
 	}
 
 	/**
-	 * @param skin {SkinData}
+	 * @param {SkinData} skin 
 	 */
 	writeSkin(skin){
 		this.writeString(skin.getSkinId());
@@ -166,17 +184,23 @@ class NetworkBinaryStream extends require("bbmc-binarystream") {
 		this.writeBool(skin.isPrimaryUser());
 	}
 
+	/**
+	 * @returns {SkinImage}
+	 */
 	readSkinImage(){
 		let width = this.readIntLE();
 		let height = this.readIntLE();
-		let data = this.readString();
+		let data = this.readByteArray();
 		return new SkinImage(height, width, data);
 	}
 
+	/**
+	 * @param {SkinImage}
+	 */
 	writeSkinImage(image){
 		this.writeIntLE(image.getWidth());
 		this.writeIntLE(image.getHeight());
-		this.writeString(image.getData());
+		this.writeByteArray(image.getData());
 	}
 }
 module.exports = NetworkBinaryStream;
