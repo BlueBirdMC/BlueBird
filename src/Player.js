@@ -301,7 +301,7 @@ class Player extends Human {
 		packsInfo.forceServerPacks = false;
 		this.sendDataPacket(packsInfo);
 
-		this.server.getLogger().info(`Player ${this.username} joined the game`);
+		this.server.getLogger().info(`Player ${this.username} joined the game, player xuid is ${this.xuid}`);
 		this.server.broadcastMessage(`§ePlayer ${this.username} joined the game`);
 	}
 
@@ -315,10 +315,10 @@ class Player extends Human {
 			let messageElement = message[i];
 			if (messageElement.trim() !== "" && messageElement.length <= 255) {
 				if (messageElement.startsWith("/")) {
-					//TODO: Send Command Packet
+					//TODO: Send command packet
 					return;
 				}
-				let msg = "<:player> :message".replace(":player", this.getName()).replace(":message", messageElement);
+				let msg = `<${this.getName()}> ${messageElement}`
 				this.server.broadcastMessage(msg);
 				this.server.getLogger().info(msg);
 			}
@@ -413,7 +413,7 @@ class Player extends Human {
 	 * @param {Boolean} hide_disconnection_screen 
 	 */
 	close(reason, hide_disconnection_screen = false) {
-		this.server.getLogger().info("Player " + this.username + " disconnected due to " + reason);
+		this.server.getLogger().info(`Player ${this.username} disconnected due to ${reason}`);
 		this.server.broadcastMessage("§ePlayer " + this.username + " left the game");
 		let pk = new DisconnectPacket();
 		pk.hideDisconnectionScreen = hide_disconnection_screen;
