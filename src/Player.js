@@ -259,7 +259,7 @@ class Player extends Human {
 		let xuid = packet.xuid;
 
 		if (!signedByMojang && xuid) {
-			this.server.getLogger().info(`${this.username} has an XUID, but his login keychain is not signed by microsoft`);
+			this.server.getLogger().info(`${this.username} has an XUID, but his login keychain is not signed by Microsoft`);
 			this.authorized = false;
 			if (this.server.bluebirdcfg.get("xbox-auth") === true) {
 				this.server.getLogger().debug(`${this.username} is not logged into Xbox Live`);
