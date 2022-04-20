@@ -38,7 +38,7 @@ class PlayerNetworkSession {
 	 */
 	handleDataPacket(packet) {
 		if (!packet instanceof DataPacket) {
-			throw new Error("expected a packet instanceof DataPacket got " + packet);
+			throw new Error("Expected a packet instanceof DataPacket got " + packet);
 		}
 
 		if (!this.player.isConnected()) {
