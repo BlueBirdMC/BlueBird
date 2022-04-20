@@ -36,7 +36,7 @@ class StartGamePacket extends DataPacket {
 		this.writeFloatLE(0.0); // Pitch
 		this.writeFloatLE(0.0); // Yaw
 
-		this.writeSignedVarInt(0); // Seed
+		this.writeLongLE(BigInt(0)); // Seed
 		this.writeShortLE(0); // Biome type
 		this.writeString(""); // Biome name
 		this.writeSignedVarInt(0); // Dimension
