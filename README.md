@@ -14,3 +14,7 @@ https://discord.gg/KQCYsxAD2b
 ### **Termux**
 >
 > apt upgrade && apt install nodejs && npm install && node start.js
+
+if ``apt install nodejs`` did not work type
+
+> apt install nodejs-lts
