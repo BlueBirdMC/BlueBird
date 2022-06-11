@@ -99,7 +99,6 @@ class Player extends Human {
 		// 	return;
 		// }
 
-		// this.server.broadcastMessage(`${this.getName()} changed his skin from ${oldSkinName} to ${newSkinName}`);
 		this.server.broadcastMessage(`${this.getName()} skin changed from ${oldSkinName} to ${newSkinName} <FIXME>`);
 
 		// this.setSkin(skin);
@@ -200,7 +199,7 @@ class Player extends Human {
 			skin.validate();
 		} catch (e) {
 			console.log(e);
-			this.close("Invalid Skin");
+			this.close(this.server.bluebirdcfg.get("err_invalid_skin"));
 			return;
 		}
 
@@ -217,7 +216,7 @@ class Player extends Human {
 	handleResourcePackClientResponse(packet) {
 		switch (packet.status) {
 			case ResourcePackClientResponsePacket.STATUS_REFUSED:
-				this.close("You must accept resource packs to join this server.");
+				this.close(this.server.bluebirdcfg.get("err_resource_pack_required"));
 				break;
 
 			case ResourcePackClientResponsePacket.STATUS_SEND_PACKS:
@@ -254,7 +253,7 @@ class Player extends Human {
 	 */
 	onVerifyCompleted(packet, error, signedByMojang) {
 		if (error !== null) {
-			this.close("Invalid session");
+			this.close(this.server.bluebirdcfg.get("err_invalid_session"));
 			return;
 		}
 
@@ -265,14 +264,14 @@ class Player extends Human {
 			this.authorized = false;
 			if (this.server.bluebirdcfg.get("xbox-auth") === true) {
 				this.server.getLogger().debug(`${this.username} is not logged into Xbox Live`);
-				this.close("To join this server you must login to your xbox account");
+				this.close(this.server.bluebirdcfg.get("err_xbox_auth_required"));
 				return;
 			}
 			xuid = "";
 		}
 
 		if (!this.username) {
-			this.close("Username is required");
+			this.close(this.server.bluebirdcfg.get("err_username_required"));
 			return;
 		}
 
@@ -281,7 +280,7 @@ class Player extends Human {
 				this.server.getLogger().warning(`${this.username} tried to join without XUID`);
 				this.authorized = false;
 				if (this.server.bluebirdcfg.get("xbox-auth") === true) {
-					this.close("To join this server you must login to your xbox account");
+					this.close(this.server.bluebirdcfg.get("err_xbox_auth_required"));
 					return;
 				}
 			}
