@@ -129,8 +129,8 @@ class Server {
 	getPlayerByPrefix(name) {
 		const player = this.getOnlinePlayers().find(player => player.getName().toLowerCase().startsWith(name.toLowerCase()));
 
-		if (player === false){
-			throw new Error(`can't find player with name: ${name}`);
+		if (player == false){
+			throw new Error(`Can't find player with name: ${name}`);
 		}
 
 		return player;
@@ -143,8 +143,8 @@ class Server {
 	getPlayerByName(name) {
 		const player = this.getOnlinePlayers().find(player => player.getName() === name);
 
-		if (player === false){
-			throw new Error(`can't find player with name: ${name}`);
+		if (player == false){
+			throw new Error(`Can't find player with name: ${name}`);
 		}
 
 		return player;
