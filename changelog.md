@@ -1,8 +1,10 @@
 #### 1.0.8
-Changes:
 [/kick] reason is now optional
+
 [skins] Fixed invalid skin size even if it is valid
+
 [general code] Fixed some bad code
+
 [config] Kick messages are not configurable
 
 #### 1.0.7
