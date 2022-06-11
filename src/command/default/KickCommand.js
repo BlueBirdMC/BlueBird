@@ -8,7 +8,7 @@ class KickCommand extends Command {
 
 	execute(sender, args) {
 		let server = sender.getServer();
-                 if(args.length < 2){
+                 if(args.length < 1){
                    server.getLogger().info(TextFormat.RED + "/kick <player name> <reason>");
                    return;
                 }
@@ -17,7 +17,9 @@ class KickCommand extends Command {
 		    server.getLogger().info(TextFormat.RED + "Player not found!");
 		    return;
                 }
-		player.kick(args.slice(1).join(" "), sender.getName());
+		let reason = args.slice(1).join(" ");
+		if (!reason) reason = "No reason"
+		player.kick(reason, sender.getName());
 	}
 }
 
