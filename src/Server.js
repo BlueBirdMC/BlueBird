@@ -84,7 +84,12 @@ class Server {
 				},
 				"maxplayers": 20,
 				"debug_level": 0,
-				"xbox-auth": true
+				"xbox-auth": true,
+				"err_username_required": "Username is required",
+				"err_xbox_auth_required": "Please login into your Xbox account or else...",
+				"err_invalid_session", "Invalid session",
+				"err_resource_pack_required": "You must accept resource packs to join this server.",
+				"err_invalid_skin": "Invalid skin!"
 			};
 			fs.writeFileSync("BlueBird.json", JSON.stringify(content, null, 4));
 		}
