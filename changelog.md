@@ -1,15 +1,22 @@
+#### 1.0.8
+Changes:
+[/kick] reason is now optional
+[skins] Fixed invalid skin size even if it is valid
+[general code] Fixed some bad code
+[config] Kick messages are not configurable
+
 #### 1.0.7
-idk (again)
+Idk
 
 #### 1.0.6
-idk many changes?
+Too many changes
 
 #### 1.0.5
 doc string
 
-new player list
+New player list
 
-commands
+Add commands
 
 #### 1.0.4
 rewrite
@@ -29,8 +36,6 @@ Fixed typos
 Better code in Globals.js
 
 Added skin packet and handling (not finished)
-
-Fixed joining will cause skin is invalid
 
 #### 1.0.1:
 Fixed typos
