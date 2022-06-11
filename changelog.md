@@ -1,4 +1,5 @@
 #### 1.0.8
+**Warning:** you need to remove BlueBird.json file because more options added
 [/kick] reason is now optional
 
 [skins] Fixed invalid skin size even if it's valid
