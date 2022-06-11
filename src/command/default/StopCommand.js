@@ -6,7 +6,7 @@ class StopCommand extends Command {
     }
 
     execute(sender, args){
-        sender.getServer().getLogger().alert("Server stopped!");
+        sender.getServer().getLogger().info("Server stopped!");
         sender.getServer().shutdown();
     }
 }
