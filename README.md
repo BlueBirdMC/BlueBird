@@ -21,5 +21,5 @@ https://discord.gg/KQCYsxAD2b
 > npm install click f5
 ### **Running from vscode**
 > use ```git clone``` this github repo
-> Then cd BlueBird
+> and Then cd BlueBird
 > Run npm install && node start.js
