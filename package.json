@@ -5,7 +5,7 @@
   "main": "src/BlueBird.js",
   "scripts": {
     "run": "node start.js",
-    "debug": "cmd /k del Lang.json /q & del BlueBird.json & node start.js"
+    "debug": "cmd /k del Lang.json /q & del BlueBird.json /q & del PurpleBird.json /q & node start.js"
   },
   "dependencies": {
     "bbmc-binarystream": "^1.0.0",
@@ -15,7 +15,7 @@
   "license": "GPL-3.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/BlueBirdMC/BlueBird"
+    "url": "https://github.com/PurpleBirdMC/PurpleBird/"
   },
   "keywords": [
     "mcpe",
@@ -23,7 +23,7 @@
     "protocol transfer"
   ],
   "bugs": {
-    "url": "https://github.com/BlueBirdMC/BlueBird/issues"
+    "url": "https://github.com/PurpleBirdMC/PurpleBird/issues"
   },
-  "homepage": "https://github.com/BlueBirdMC/BlueBird"
+  "homepage": "https://github.com/PurpleBirdMC/PurpleBird/"
 }
