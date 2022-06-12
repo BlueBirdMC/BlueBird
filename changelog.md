@@ -5,6 +5,10 @@
 
 [general code] Fixed some bad code
 
+[/say] Changed color from red to pink
+
+[forms] Added support for forms
+
 [join] New console message
 
 [chat] Messages are now logged
