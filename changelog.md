@@ -5,6 +5,7 @@ If you want more recent version: https://github.com/PurpleBirdMC/PurpleBird/tree
 But the unstable branch is UNSTABLE
 
 [bugs] Fixed a bug
+
 [dependencies] Added mineflayer as dependency
 
 
