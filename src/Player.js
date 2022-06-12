@@ -116,8 +116,8 @@ class Player extends Human {
 			} else {
 				this.sendPlayStatus(PlayStatusPacket.LOGIN_FAILED_SERVER, true);
 			}
-
-			this.close("Incompatible protocol");
+			
+			this.close(this.server.bluebirdlang.get("kick_incompatible_protocol"))
 			return;
 		}
 
@@ -199,7 +199,7 @@ class Player extends Human {
 			skin.validate();
 		} catch (e) {
 			console.log(e);
-			this.close(this.server.bluebirdcfg.get("err_invalid_skin"));
+			this.close(this.server.bluebirdlang.get("kick_invalid_skin"));
 			return;
 		}
 
@@ -216,7 +216,7 @@ class Player extends Human {
 	handleResourcePackClientResponse(packet) {
 		switch (packet.status) {
 			case ResourcePackClientResponsePacket.STATUS_REFUSED:
-				this.close(this.server.bluebirdcfg.get("err_resource_pack_required"));
+				this.close(this.server.bluebirdlang.get("kick_resource_pack_required"));
 				break;
 
 			case ResourcePackClientResponsePacket.STATUS_SEND_PACKS:
@@ -253,7 +253,7 @@ class Player extends Human {
 	 */
 	onVerifyCompleted(packet, error, signedByMojang) {
 		if (error !== null) {
-			this.close(this.server.bluebirdcfg.get("err_invalid_session"));
+			this.close(this.server.bluebirdlang.get("kick_invalid_session"));
 			return;
 		}
 
@@ -262,16 +262,16 @@ class Player extends Human {
 		if (!signedByMojang && xuid) {
 			this.server.getLogger().info(`${this.username} has an XUID, but his login keychain is not signed by microsoft`);
 			this.authorized = false;
-			if (this.server.bluebirdcfg.get("xbox-auth") === true) {
+			if (this.server.bluebirdlang.get("xbox-auth") === true) {
 				this.server.getLogger().debug(`${this.username} is not logged into Xbox Live`);
-				this.close(this.server.bluebirdcfg.get("err_xbox_auth_required"));
+				this.close(this.server.bluebirdlang.get("kick_xbox_auth_required"));
 				return;
 			}
 			xuid = "";
 		}
 
 		if (!this.username) {
-			this.close(this.server.bluebirdcfg.get("err_username_required"));
+			this.close(this.server.bluebirdlang.get("kick_username_required"));
 			return;
 		}
 
@@ -279,8 +279,8 @@ class Player extends Human {
 			if (signedByMojang) {
 				this.server.getLogger().warning(`${this.username} tried to join without XUID`);
 				this.authorized = false;
-				if (this.server.bluebirdcfg.get("xbox-auth") === true) {
-					this.close(this.server.bluebirdcfg.get("err_xbox_auth_required"));
+				if (this.server.bluebirdlang.get("xbox-auth") === true) {
+					this.close(this.server.bluebirdlang.get("kick_xbox_auth_required"));
 					return;
 				}
 			}
@@ -302,7 +302,7 @@ class Player extends Human {
 		packet3.forceServerPacks = false;
 		packet3.sendTo(this);
 
-		this.server.getLogger().info(`new connection NAME=${this.username} ADDRESS=${this.connection.address.toString()}`);
+		this.server.getLogger().info(`New connection from ${this.username} [/${this.connection.address.toString()}]`);
 		this.server.broadcastMessage(`${TextFormat.GRAY}[${TextFormat.DARK_GREEN}+${TextFormat.GRAY}]${TextFormat.RESET}${TextFormat.WHITE} ${this.username}`);
 	}
 
@@ -330,9 +330,13 @@ class Player extends Human {
 								};
 								pk.sendTo(this);
 								break;
+							case ".kickme":
+								this.close(this.server.bluebirdlang.get("kick_xbox_auth_required"));
+								break;
 						}
 					}
 				}
+				this.server.getLogger().info(`<${this.username}> ${messageElement}`);
 				this.server.broadcastMessage(`<${this.username}> ${messageElement}`);
 			}
 		}
@@ -426,7 +430,7 @@ class Player extends Human {
 	 * @param {string} reason
 	 * @param {bool} onlymsg
 	 */
-	close(message = "", reason = "no reason", onlymsg = false) {
+	close(message = "", reason = "No reason", onlymsg = false) {
 		this.server.getLogger().info("Player " + this.username + " disconnected due to " + reason);
 		this.server.broadcastMessage(message === "" ? `${TextFormat.GRAY}[${TextFormat.DARK_RED}-${TextFormat.GRAY}]${TextFormat.RESET}${TextFormat.WHITE} ${this.username}` : message);
 		if(onlymsg === false){
@@ -439,7 +443,7 @@ class Player extends Human {
 	}
 
 	kick(reason, by){
-		this.close("", `Kicked by ${by}, reason: ${reason}`);
+		this.close("", this.server.bluebirdlang.get("kick_kicked").replace("{by}", by).replace("{reason}", reason));
 	}
 
 	/**
