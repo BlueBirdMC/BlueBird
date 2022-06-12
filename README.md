@@ -1,23 +1,11 @@
 ## Discord
 https://discord.gg/KQCYsxAD2b
 
-### **Installing NodeJS on Linux**
->
-> sudo apt update && apt install nodejs
->
-### **Linux and Windows**
->
-> You should have NodeJS installed
->
-> npm install && node start.js
->
-### **Termux**
->
-> apt upgrade && apt install nodejs && npm install && node start.js
+##      ***installation***
+git clone https://github.com/BlueBirdMC/BlueBird.git
 
-if ``apt install nodejs`` did not work type
+cd BlueBird
 
-> apt install nodejs-lts
+npm i
 
-### running from vscode
-> npm install click f5
+node start.js || vscode = f5

@@ -20,7 +20,6 @@ class Skin {
         128 * 128 * 4,
         4102
     ];
-
     #skinId;
     #skinData;
     #capeData;
@@ -60,12 +59,12 @@ class Skin {
         }
 
         let length = this.#skinData.length;
-        if(Skin.ACCEPTED_SKIN_SIZES.includes(length) === false) {
+        if([4096, 4102, 8192, 16384, 65536].includes(length) === false) {
             throw new Error(`Invalid skin data size ${length} bytes (allowed sizes: ${Skin.ACCEPTED_SKIN_SIZES.join(', ')})`);
         }
 
-        if(this.#capeData !== "" && this.#capeData.length !== 8192) {
-            throw new Error("Invalid cape data size " + this.#capeData.length + " bytes (must be exactly 8192 bytes)");
+        if(this.#capeData !== "" && this.#capeData.length !== 4096) {
+            throw new Error("Invalid cape data size " + this.#capeData.length + " bytes (must be exactly 4096 bytes)");
         }
 
         if(this.#geometryData !== ""){
