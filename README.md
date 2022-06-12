@@ -1,11 +1,10 @@
-## Discord
-https://discord.gg/KQCYsxAD2b
+##      ***Installation***
+1. Open command prompt
 
-##      ***installation***
-git clone https://github.com/BlueBirdMC/BlueBird.git
+2. git clone https://github.com/PurpleBirdMC/PurpleBird.git
 
-cd BlueBird
+3. cd PurpleBird
 
-npm i
+4. npm i
 
-node start.js || vscode = f5
+5. node start.js
