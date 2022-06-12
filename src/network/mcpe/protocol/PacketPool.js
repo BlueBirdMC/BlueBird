@@ -27,6 +27,7 @@ const DisconnectPacket = require("./DisconnectPacket");
 const PlayerSkinPacket = require("./PlayerSkinPacket");
 const SetLocalPlayerAsInitializedPacket = require("./SetLocalPlayerAsInitializedPacket");
 const ToastRequestPacket = require("./ToastRequestPacket");
+const { ModalFormRequestPacket, ModalFormResponsePacket } = require("./FormPackets");
 
 class PacketPool {
 
@@ -47,6 +48,8 @@ class PacketPool {
 		this.register(SetLocalPlayerAsInitializedPacket);
 		this.register(PlayerSkinPacket);
 		this.register(ToastRequestPacket);
+		this.register(ModalFormRequestPacket);
+		this.register(ModalFormResponsePacket);
 	}
 
 	static register(packet) {

@@ -33,6 +33,8 @@ class Identifiers {
 	static AVAILABLE_ACTOR_IDENTIFIERS_PACKET = 0x77;
 	static AVAILABLE_COMMANDS_PACKET = 0x4d;
 	static TOAST_REQUEST_PACKET = 0xba;
+	static MODAL_FORM_REQUEST_PACKET = 0x64;
+	static MODAL_FORM_RESPONSE_PACKET = 0x65;
 };
 
 module.exports = Identifiers;

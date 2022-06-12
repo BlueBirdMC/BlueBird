@@ -78,6 +78,10 @@ class PlayerNetworkSession {
 		return true;
 	}
 
+	handleModalFormResponse(packet) {
+		return true;
+	}
+
 	/**
 	 * @return {String}
 	 */
