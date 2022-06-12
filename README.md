@@ -1,11 +1,25 @@
-## Discord
-https://discord.gg/KQCYsxAD2b
+## What is PurpleBird (PB)
 
-##      ***installation***
-git clone https://github.com/BlueBirdMC/BlueBird.git
+PurpleBird is a thing that allows people from bedrock mc join java servers (in early development, do not use on production servers)
 
-cd BlueBird
+Handles:
 
-npm i
+  1. Client > Target server - Joining 
+  
+  2. (partial) Target server > Client - Kick
+  
+  3. (partial) Target server > Client - Error kick
+  
+  4. (partial) Client > Target server - chat
 
-node start.js || vscode = f5
+
+##      ***Installation***
+1. Open command prompt
+
+2. git clone https://github.com/PurpleBirdMC/PurpleBird.git
+
+3. cd PurpleBird
+
+4. npm i
+
+5. node start.js

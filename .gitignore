@@ -1,4 +1,5 @@
-.idea/
 node_modules/
 BlueBird.json
+Lang.json
+PurpleBird.json
 package-lock.json
