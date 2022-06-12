@@ -100,10 +100,7 @@ class Player extends Human {
 		// 	return;
 		// }
 
-		this.server.broadcastMessage(`${this.getName()} skin changed from ${oldSkinName} to ${newSkinName} <FIXME>`);
-
-		// this.setSkin(skin);
-		// this.sendSkin(this.server.getOnlinePlayers());
+		this.server.broadcastMessage(`${this.getName()} skin changed from ${oldSkinName} to ${newSkinName}`);
 	}
 
 	/**
