@@ -1,0 +1,9 @@
+{
+    "kick_username_required": "Username is required",
+    "kick_xbox_auth_required": "Please login into your Xbox account or else...",
+    "kick_invalid_session": "Invalid session",
+    "kick_resource_pack_required": "You must accept resource packs to join this server.",
+    "kick_invalid_skin": "Invalid skin!",
+    "kick_incompatible_protocol": "Incompatible protocol",
+    "kick_kicked": "Kicked by {by}, reason: ${reason}"
+}

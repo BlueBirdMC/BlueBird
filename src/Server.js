@@ -15,6 +15,7 @@
 
 const GamePacket = require("./network/mcpe/protocol/GamePacket");
 const Config = require("./utils/Config");
+const Lang = require("./utils/Lang");
 const Logger = require("./utils/MainLogger");
 const fs = require("fs");
 const CommandMap = require("./command/CommandMap");
@@ -35,6 +36,8 @@ class Server {
 	dataPath;
 	/** @type {Config} */
 	bluebirdcfg;
+	/** @type {Lang} */
+	bluebirdlang;
 	/** @type {CommandMap} */
 	commandMap;
 	/** @type {string} */
@@ -88,13 +91,26 @@ class Server {
 			};
 			fs.writeFileSync("BlueBird.json", JSON.stringify(content, null, 4));
 		}
+		this.getLogger().info("Loading Lang.json");
+		if (!fs.existsSync("Lang.json")) {
+			let content = {
+    				"kick_username_required": "Username is required",
+    				"kick_xbox_auth_required": "Please login into your Xbox account or else...",
+    				"kick_invalid_session": "Invalid session",
+    				"kick_resource_pack_required": "You must accept resource packs to join this server.",
+    				"kick_invalid_skin": "Invalid skin!",
+    				"kick_incompatible_protocol": "Incompatible protocol",
+    				"kick_kicked": "Kicked by {by}, reason: ${reason}"
+			};
+			fs.writeFileSync("Lang.json", JSON.stringify(content, null, 4));
+		}
+		this.bluebirdlang = new Config("Lang.json", Lang.TYPE_JSON);
 		this.bluebirdcfg = new Config("BlueBird.json", Config.TYPE_JSON);
 		this.getLogger().info(`This server is running ${this.serverName}, v${this.serverVersion}`);
 		this.getLogger().info(`${this.serverName} is distributed under GPLv3 License`);
 		let addrname = this.bluebirdcfg.getNested("address.name");
 		let addrport = this.bluebirdcfg.getNested("address.port");
 		let addrversion = this.bluebirdcfg.getNested("address.version"); // dont use config on here (u just wait)
-
 		this.raknet = new RakNetHandler(this, addrname, addrport, addrversion);
 		if (this.raknet.raknet.isRunning === true) {
 			this.raknet.handle();
@@ -129,8 +145,8 @@ class Server {
 	getPlayerByPrefix(name) {
 		const player = this.getOnlinePlayers().find(player => player.getName().toLowerCase().startsWith(name.toLowerCase()));
 
-		if (player === false){
-			throw new Error(`can't find player with name: ${name}`);
+		if (player == false){
+			throw new Error(`Can't find player with name: ${name}`);
 		}
 
 		return player;
@@ -143,8 +159,8 @@ class Server {
 	getPlayerByName(name) {
 		const player = this.getOnlinePlayers().find(player => player.getName() === name);
 
-		if (player === false){
-			throw new Error(`can't find player with name: ${name}`);
+		if (player == false){
+			throw new Error(`Can't find player with name: ${name}`);
 		}
 
 		return player;

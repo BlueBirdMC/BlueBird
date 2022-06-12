@@ -3,14 +3,14 @@ const { TextFormat } = require("../../utils/TextFormat");
 const Command = require("../Command");
 
 class TitleCommand extends Command {
-    constructor(){
+    constructor() {
         super("title", "send a title to a player");
     }
 
-    execute(sender, args){
+    execute(sender, args) {
         let server = sender.getServer();
         if(args.length < 3){
-            server.getLogger().info(TextFormat.RED + "/title <type> <playerName> <message>");
+            server.getLogger().info(TextFormat.RED + "/title <type> <player name> <message>");
             return;
         }
         let type;

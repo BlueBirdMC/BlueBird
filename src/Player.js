@@ -100,11 +100,7 @@ class Player extends Human {
 		// 	return;
 		// }
 
-		// this.server.broadcastMessage(`${this.getName()} changed his skin from ${oldSkinName} to ${newSkinName}`);
-		this.server.broadcastMessage(`${this.getName()} skin changed from ${oldSkinName} to ${newSkinName} <FIXME>`);
-
-		// this.setSkin(skin);
-		// this.sendSkin(this.server.getOnlinePlayers());
+		this.server.broadcastMessage(`${this.getName()} skin changed from ${oldSkinName} to ${newSkinName}`);
 	}
 
 	/**
@@ -118,8 +114,8 @@ class Player extends Human {
 			} else {
 				this.sendPlayStatus(PlayStatusPacket.LOGIN_FAILED_SERVER, true);
 			}
-
-			this.close("Incompatible protocol");
+			
+			this.close(this.server.bluebirdlang.get("kick_incompatible_protocol"))
 			return;
 		}
 
@@ -201,7 +197,7 @@ class Player extends Human {
 			skin.validate();
 		} catch (e) {
 			console.log(e);
-			this.close("Invalid Skin");
+			this.close(this.server.bluebirdlang.get("kick_invalid_skin"));
 			return;
 		}
 
@@ -218,7 +214,7 @@ class Player extends Human {
 	handleResourcePackClientResponse(packet) {
 		switch (packet.status) {
 			case ResourcePackClientResponsePacket.STATUS_REFUSED:
-				this.close("You must accept resource packs to join this server.");
+				this.close(this.server.bluebirdlang.get("kick_resource_pack_required"));
 				break;
 
 			case ResourcePackClientResponsePacket.STATUS_SEND_PACKS:
@@ -255,7 +251,7 @@ class Player extends Human {
 	 */
 	onVerifyCompleted(packet, error, signedByMojang) {
 		if (error !== null) {
-			this.close("Invalid session");
+			this.close(this.server.bluebirdlang.get("kick_invalid_session"));
 			return;
 		}
 
@@ -264,16 +260,16 @@ class Player extends Human {
 		if (!signedByMojang && xuid) {
 			this.server.getLogger().info(`${this.username} has an XUID, but his login keychain is not signed by microsoft`);
 			this.authorized = false;
-			if (this.server.bluebirdcfg.get("xbox-auth") === true) {
+			if (this.server.bluebirdlang.get("xbox-auth") === true) {
 				this.server.getLogger().debug(`${this.username} is not logged into Xbox Live`);
-				this.close("To join this server you must login to your xbox account");
+				this.close(this.server.bluebirdlang.get("kick_xbox_auth_required"));
 				return;
 			}
 			xuid = "";
 		}
 
 		if (!this.username) {
-			this.close("Username is required");
+			this.close(this.server.bluebirdlang.get("kick_username_required"));
 			return;
 		}
 
@@ -281,8 +277,8 @@ class Player extends Human {
 			if (signedByMojang) {
 				this.server.getLogger().warning(`${this.username} tried to join without XUID`);
 				this.authorized = false;
-				if (this.server.bluebirdcfg.get("xbox-auth") === true) {
-					this.close("To join this server you must login to your xbox account");
+				if (this.server.bluebirdlang.get("xbox-auth") === true) {
+					this.close(this.server.bluebirdlang.get("kick_xbox_auth_required"));
 					return;
 				}
 			}
@@ -304,7 +300,7 @@ class Player extends Human {
 		packet3.forceServerPacks = false;
 		packet3.sendTo(this);
 
-		this.server.getLogger().info(`new connection NAME=${this.username} ADDRESS=${this.connection.address.toString()}`);
+		this.server.getLogger().info(`New connection from ${this.username} [/${this.connection.address.toString()}]`);
 		this.server.broadcastMessage(`${TextFormat.GRAY}[${TextFormat.DARK_GREEN}+${TextFormat.GRAY}]${TextFormat.RESET}${TextFormat.WHITE} ${this.username}`);
 	}
 
@@ -332,6 +328,9 @@ class Player extends Human {
 								};
 								pk.sendTo(this);
 								break;
+							case ".kickme":
+								this.close(this.server.bluebirdlang.get("kick_xbox_auth_required"));
+                break;
 							case "form":
 								let form = new ModalFormRequestPacket();
 								form.id = 555;
@@ -348,6 +347,7 @@ class Player extends Human {
 						return;
 					}
 				}
+				this.server.getLogger().info(`<${this.username}> ${messageElement}`);
 				this.server.broadcastMessage(`<${this.username}> ${messageElement}`);
 			}
 		}
@@ -441,7 +441,7 @@ class Player extends Human {
 	 * @param {string} reason
 	 * @param {bool} onlymsg
 	 */
-	close(message = "", reason = "no reason", onlymsg = false) {
+	close(message = "", reason = "No reason", onlymsg = false) {
 		this.server.getLogger().info("Player " + this.username + " disconnected due to " + reason);
 		this.server.broadcastMessage(message === "" ? `${TextFormat.GRAY}[${TextFormat.DARK_RED}-${TextFormat.GRAY}]${TextFormat.RESET}${TextFormat.WHITE} ${this.username}` : message);
 		if(onlymsg === false){
@@ -454,7 +454,7 @@ class Player extends Human {
 	}
 
 	kick(reason, by){
-		this.close("", `Kicked by ${by}, reason: ${reason}`);
+		this.close("", this.server.bluebirdlang.get("kick_kicked").replace("{by}", by).replace("{reason}", reason));
 	}
 
 	/**

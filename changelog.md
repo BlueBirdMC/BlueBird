@@ -1,15 +1,34 @@
+#### 1.0.8
+
+
+[skins] Fixed invalid skin size even if it's valid
+
+[general code] Fixed some bad code
+
+[/say] Changed color from red to pink
+
+[forms] Added support for forms
+
+[join] New console message
+
+[chat] Messages are now logged
+
+[config] New file: Lang.json
+
+[config] Kick messages are now configurable
+
 #### 1.0.7
-idk (again)
+Idk
 
 #### 1.0.6
-idk many changes?
+Too many changes
 
 #### 1.0.5
 doc string
 
-new player list
+New player list
 
-commands
+Add commands
 
 #### 1.0.4
 rewrite
@@ -29,8 +48,6 @@ Fixed typos
 Better code in Globals.js
 
 Added skin packet and handling (not finished)
-
-Fixed joining will cause skin is invalid
 
 #### 1.0.1:
 Fixed typos
