@@ -14,10 +14,6 @@
 \******************************************/
 
 class Skin {
-    static ACCEPTED_SKIN_SIZES = [
-        4096, 4102, 8192,16384,65536
-    ];
-// i kinda messed up yesterday but it fixed now it doesn't show invalid skin size
     #skinId;
     #skinData;
     #capeData;
@@ -56,8 +52,8 @@ class Skin {
             throw new Error("Skin id must not be empty");
         }
 
-        let length = this.#skinData.length;
-        if(Skin.ACCEPTED_SKIN_SIZES.includes(length) === false) {
+        let length = this.#skinData. length;]
+        if([4096, 4102, 8192, 16384, 65536].includes(length) === false) {
             throw new Error(`Invalid skin data size ${length} bytes (allowed sizes: ${Skin.ACCEPTED_SKIN_SIZES.join(', ')})`);
         }
 
