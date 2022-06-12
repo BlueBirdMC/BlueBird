@@ -4,8 +4,11 @@ PurpleBird is a thing that allows people from bedrock mc join java servers (in e
 
 Handles:
   [x] Client > Target server - Joining
+  
   [x] (partial) Target server > Client - Kick
+  
   [x] (partial) Target server > Client - Error kick
+  
   [x] (partial) Client > Target server - chat
 
 
