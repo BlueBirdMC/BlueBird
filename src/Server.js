@@ -15,6 +15,7 @@
 
 const GamePacket = require("./network/mcpe/protocol/GamePacket");
 const Config = require("./utils/Config");
+const PurpleConfig = require("./purple/PurpleConfig");
 const Lang = require("./utils/Lang");
 const Logger = require("./utils/MainLogger");
 const fs = require("fs");
@@ -23,7 +24,8 @@ const DefaultCommandLoader = require("./command/DefaultCommandLoader");
 const Player = require("./Player");
 const MainLogger = require("./utils/MainLogger");
 const RakNetHandler = require("./network/RakNetHandler");
-const CommandSender = require("./command/CommandSender");
+// const CommandSender = require("./command/CommandSender");
+// 'CommandSender' is declared but its value is never read
 const ConsoleCommandSender = require("./command/ConsoleCommandSender");
 const readline = require("readline");
 
@@ -36,6 +38,8 @@ class Server {
 	dataPath;
 	/** @type {Config} */
 	bluebirdcfg;
+	/** @type {PurpleConfig} */
+	purplebirdcfg;
 	/** @type {Lang} */
 	bluebirdlang;
 	/** @type {CommandMap} */
@@ -87,9 +91,25 @@ class Server {
 				},
 				"maxplayers": 20,
 				"debug_level": 0,
-				"xbox-auth": true
+				"xbox-auth": true,
 			};
 			fs.writeFileSync("BlueBird.json", JSON.stringify(content, null, 4));
+		}
+		this.getLogger().info("Loading PurpleBird.json");
+		if (!fs.existsSync("PurpleBird.json")) {
+			let content = {
+				"target": {
+					"host": "localhost",
+					"port": 25565,
+					"version": "1.16.3",
+					"isqueryenabled": false
+				},
+				"players": {
+					"tip": "Leave blank to disable!",
+					"prefix": "_"
+				}
+			};
+			fs.writeFileSync("PurpleBird.json", JSON.stringify(content, null, 4));
 		}
 		this.getLogger().info("Loading Lang.json");
 		if (!fs.existsSync("Lang.json")) {
@@ -100,17 +120,21 @@ class Server {
     				"kick_resource_pack_required": "You must accept resource packs to join this server.",
     				"kick_invalid_skin": "Invalid skin!",
     				"kick_incompatible_protocol": "Incompatible protocol",
-    				"kick_kicked": "Kicked by {by}, reason: ${reason}"
+    				"kick_kicked": "Kicked by {by}, reason: ${reason}",
+				"msg_skins_notsupported": "§cChanging skins are not supported."
 			};
 			fs.writeFileSync("Lang.json", JSON.stringify(content, null, 4));
 		}
-		this.bluebirdlang = new Config("Lang.json", Lang.TYPE_JSON);
+		this.bluebirdlang = new Lang("Lang.json", Lang.TYPE_JSON);
 		this.bluebirdcfg = new Config("BlueBird.json", Config.TYPE_JSON);
+		this.purplebirdcfg = new PurpleConfig("PurpleBird.json", PurpleConfig.TYPE_JSON);
 		this.getLogger().info(`This server is running ${this.serverName}, v${this.serverVersion}`);
+		this.getLogger().warning(`[Purple Bird] Purple bird is still in early development, report bugs on our repo`)
+		this.getLogger().warning(`[Purple Bird] Currently ip forwarding is not supported!`)
 		this.getLogger().info(`${this.serverName} is distributed under GPLv3 License`);
 		let addrname = this.bluebirdcfg.getNested("address.name");
 		let addrport = this.bluebirdcfg.getNested("address.port");
-		let addrversion = this.bluebirdcfg.getNested("address.version"); // dont use config on here (u just wait)
+		let addrversion = this.bluebirdcfg.getNested("address.version");
 		this.raknet = new RakNetHandler(this, addrname, addrport, addrversion);
 		if (this.raknet.raknet.isRunning === true) {
 			this.raknet.handle();

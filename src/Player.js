@@ -41,6 +41,7 @@ const LoginPacket = require("./network/mcpe/protocol/LoginPacket");
 const Human = require("./entity/Human");
 const ToastRequestPacket = require("./network/mcpe/protocol/ToastRequestPacket");
 const { ModalFormRequestPacket } = require("./network/mcpe/protocol/FormPackets");
+const mineflayer = require('mineflayer')
 
 class Player extends Human {
 
@@ -97,12 +98,9 @@ class Player extends Human {
 	 * @param {string} newSkinName 
 	 * @returns {void}
 	 */
-	changeSkin(skin, oldSkinName, newSkinName) { //todo: skin is invaild cuz of the capedata
-		// if (!skin.isValid()) {
-		// 	return;
-		// }
-
-		this.server.broadcastMessage(`${this.getName()} skin changed from ${oldSkinName} to ${newSkinName}`);
+	changeSkin(skin, oldSkinName, newSkinName) { 
+		this.server.getLogger().warning(`[Purple Bird] ${this.username} tried to change his skin, but changing skins are not supported on java servers`);
+		this.sendMessage(this.server.bluebirdlang.get("msg_skins_notsupported"))
 	}
 
 	/**
@@ -198,7 +196,7 @@ class Player extends Human {
 			skin = SkinAdapterSingleton.get().fromSkinData(skinData);
 			skin.validate();
 		} catch (e) {
-			console.log(e);
+			this.server.getLogger.warn(`${this.username} has invalid skin: ${e}`)
 			this.close(this.server.bluebirdlang.get("kick_invalid_skin"));
 			return;
 		}
@@ -251,7 +249,13 @@ class Player extends Human {
 	 * @param {Boolean} signedByMojang 
 	 * @returns {void}
 	 */
+
 	onVerifyCompleted(packet, error, signedByMojang) {
+		let addr = this.server.purplebirdcfg.getNested("target.host");
+		let port = this.server.purplebirdcfg.getNested("target.port");
+		let prefix = this.server.purplebirdcfg.getNested("player.prefix");
+		let ver = this.server.purplebirdcfg.getNested("target.version");
+		try {
 		if (error !== null) {
 			this.close(this.server.bluebirdlang.get("kick_invalid_session"));
 			return;
@@ -303,7 +307,29 @@ class Player extends Human {
 		packet3.sendTo(this);
 
 		this.server.getLogger().info(`New connection from ${this.username} [/${this.connection.address.toString()}]`);
-		this.server.broadcastMessage(`${TextFormat.GRAY}[${TextFormat.DARK_GREEN}+${TextFormat.GRAY}]${TextFormat.RESET}${TextFormat.WHITE} ${this.username}`);
+		this.server.getLogger().info(`[PurpleBird] Creating connection, please wait...`);
+		
+		this.server.getLogger().debug(`
+		ADDR: ${addr},
+		PORT: ${port},
+		PREFIX: ${prefix},
+		VER: ${ver}
+		`)
+
+
+		const bot = mineflayer.createBot({
+		  host: addr,
+		  username: prefix + this.username,
+		  port: port,
+		  version: ver
+		})
+		
+		bot.once('spawn', this.server.getLogger().info(`[PurpleBird] Connection created`))
+
+		bot.on('kicked', this.close(reason.replace(`{"text":"`, "").replace(`"}`, "").replace(`"`, "").replace(`"`, "").replace(`\n`, "\n")))
+		bot.on('error', console.log)
+		
+	} catch (e) {console.log(e)}
 	}
 
 	/**
