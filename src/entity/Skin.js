@@ -17,7 +17,7 @@ class Skin {
     static ACCEPTED_SKIN_SIZES = [
         4096, 4102, 8192,16384,65536
     ];
-
+// i kinda messed up yesterday but it fixed now it doesn't show invalid skin size
     #skinId;
     #skinData;
     #capeData;
