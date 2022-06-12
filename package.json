@@ -1,8 +1,8 @@
 {
-  "name": "bluebird",
+  "name": "AppleBird",
   "version": "src/ServerInfo.js>>VERSION",
   "description": "A server software for Minecraft: Bedrock edition",
-  "main": "src/BlueBird.js",
+  "main": "src/AppleBird.js",
   "scripts": {
     "test": "node start.js"
   },
@@ -14,14 +14,15 @@
   "license": "GPL-3.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/BlueBirdMC/BlueBird"
+    "url": "https://github.com/AppleBirdMC/AppleBird
   },
   "keywords": [
+    "#APPLEBIRD2022",
     "mcpe",
     "mcpe server"
   ],
   "bugs": {
-    "url": "https://github.com/BlueBirdMC/BlueBird/issues"
+    "url": "https://github.com/AppleBirdMC/AppleBird/issues"
   },
-  "homepage": "https://github.com/BlueBirdMC/BlueBird"
+  "homepage": "https://github.com/AppleBirdMC/AppleBird"
 }
