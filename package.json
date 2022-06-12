@@ -1,8 +1,8 @@
 {
-  "name": "bluebird",
+  "name": "purplebird",
   "version": "src/ServerInfo.js>>VERSION",
   "description": "A server software for Minecraft: Bedrock edition",
-  "main": "src/BlueBird.js",
+  "main": "src/PurpleBird.js",
   "scripts": {
     "test": "node start.js"
   },
@@ -10,18 +10,18 @@
     "bbmc-binarystream": "^1.0.0",
     "bbmc-raknet": "^1.0.2"
   },
-  "author": "BlueBirdMC Team",
+  "author": "BlueBirdMC Team & some ppl from https://github.com/PurpleBirdMC/PurpleBird/",
   "license": "GPL-3.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/BlueBirdMC/BlueBird"
+    "url": "https://github.com/PurpleBirdMC/PurpleBird/"
   },
   "keywords": [
     "mcpe",
     "mcpe server"
   ],
   "bugs": {
-    "url": "https://github.com/BlueBirdMC/BlueBird/issues"
+    "url": "https://github.com/PurpleBirdMC/PurpleBird/issues"
   },
-  "homepage": "https://github.com/BlueBirdMC/BlueBird"
+  "homepage": "https://github.com/PurpleBirdMC/PurpleBird/BlueBird"
 }
