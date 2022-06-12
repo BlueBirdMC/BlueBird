@@ -323,8 +323,8 @@ class Player extends Human {
 							case "toast":
 								let pk = new ToastRequestPacket();
 								pk.settings = {
-									title: "Test",
-									body: "Some trash :PP"
+									title: "Gay Tester",
+									body: "Choose Yes or No"
 								};
 								pk.sendTo(this);
 								break;
@@ -336,7 +336,7 @@ class Player extends Human {
 								form.id = 555;
 								form.content = JSON.stringify({
 									type: "modal",
-									title: "Are u gay?",
+									title: "Does you're mom knows that u are gay?",
 									content: "Yes or no",
 									button1: "Yes",
 									button2: "No"
