@@ -14,7 +14,7 @@ class SayCommand extends Command {
             }
             return;
         }
-        sender.getServer().broadcastMessage(TextFormat.DARK_PURPLE + "[Server] " + TextFormat.WHITE + args.join(" "));
+        sender.getServer().broadcastMessage(TextFormat.DARK_PURPLE + "[Server] " + TextFormat.WHITE + args.join(""));
     }
 }
 
