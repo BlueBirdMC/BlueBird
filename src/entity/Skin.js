@@ -52,7 +52,7 @@ class Skin {
             throw new Error("Skin id must not be empty");
         }
 
-        let length = this.#skinData. length;]
+        let length = this.#skinData.length;
         if([4096, 4102, 8192, 16384, 65536].includes(length) === false) {
             throw new Error(`Invalid skin data size ${length} bytes (allowed sizes: ${Skin.ACCEPTED_SKIN_SIZES.join(', ')})`);
         }
