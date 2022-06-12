@@ -9,7 +9,8 @@
   },
   "dependencies": {
     "bbmc-binarystream": "^1.0.0",
-    "bbmc-raknet": "^1.0.2"
+    "bbmc-raknet": "^1.0.2",
+    "mineflayer": "4.3.0"
   },
   "author": "BlueBirdMC Team",
   "license": "GPL-3.0",
