@@ -1,11 +1,11 @@
 {
-  "name": "bluebird",
+  "name": "purplebird",
   "version": "src/ServerInfo.js>>VERSION",
-  "description": "A server software for Minecraft: Bedrock edition",
+  "description": "A protocol transfer for Minecraft: Bedrock edition",
   "main": "src/BlueBird.js",
   "scripts": {
     "run": "node start.js",
-    "build": "cmd /k del Lang.json /q & del BlueBird.json & node start.js"
+    "debug": "cmd /k del Lang.json /q & del BlueBird.json & node start.js"
   },
   "dependencies": {
     "bbmc-binarystream": "^1.0.0",
@@ -19,7 +19,8 @@
   },
   "keywords": [
     "mcpe",
-    "mcpe server"
+    "mcpe server",
+    "protocol transfer"
   ],
   "bugs": {
     "url": "https://github.com/BlueBirdMC/BlueBird/issues"
