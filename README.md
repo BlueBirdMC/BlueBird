@@ -6,7 +6,7 @@ Handles:
 
   1. Client > Target server - Joining 
   
-  2. (partial) Target server > Client - Kick
+  2. Target server > Client - Kick
   
   3. (partial) Target server > Client - Error kick
   
