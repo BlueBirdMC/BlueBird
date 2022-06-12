@@ -4,9 +4,12 @@ PurpleBird is a thing that allows people from bedrock mc join java servers (in e
 
 Handles:
 
+If you want more recent version: https://github.com/PurpleBirdMC/PurpleBird/tree/unstable
+But the unstable branch is UNSTABLE
+
   1. Client > Target server - Joining 
   
-  2. Target server > Client - Kick
+  2. (partial) Target server > Client - Kick
   
   3. (partial) Target server > Client - Error kick
   
