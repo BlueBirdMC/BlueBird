@@ -319,36 +319,6 @@ class Player extends Human {
 					// Send AvailableCommandsPacket
 					return;
 				}
-				if (_DEBUG) {
-					if (messageElement.startsWith("*")) {
-						switch (messageElement.split("*")[1]) {
-							case "toast":
-								let pk = new ToastRequestPacket();
-								pk.settings = {
-									title: "Gay Tester",
-									body: "Choose Yes or No"
-								};
-								pk.sendTo(this);
-								break;
-							case ".kickme":
-								this.close(this.server.bluebirdlang.get("kick_xbox_auth_required"));
-                break;
-							case "form":
-								let form = new ModalFormRequestPacket();
-								form.id = 555;
-								form.content = JSON.stringify({
-									type: "modal",
-									title: "Does you're mom knows that u are gay?",
-									content: "Yes or no",
-									button1: "Yes",
-									button2: "No"
-								});
-								form.sendTo(this);
-								break;
-						}
-						return;
-					}
-				}
 				this.server.getLogger().info(`<${this.username}> ${messageElement}`);
 				this.server.broadcastMessage(`<${this.username}> ${messageElement}`);
 			}
