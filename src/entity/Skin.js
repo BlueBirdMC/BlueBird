@@ -14,12 +14,6 @@
 \******************************************/
 
 class Skin {
-    static ACCEPTED_SKIN_SIZES = [
-        64 * 32 * 4,
-        64 * 64 * 4,
-        128 * 128 * 4,
-        4102
-    ];
     #skinId;
     #skinData;
     #capeData;
