@@ -1,0 +1,12 @@
+{
+    "target": {
+        "host": "localhost",
+        "port": 25565,
+        "version": "1.16.3",
+        "isqueryenabled": false
+    },
+    "players": {
+        "tip": "Leave blank to disable!",
+        "prefix": "_"
+    }
+}
