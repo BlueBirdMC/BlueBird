@@ -108,19 +108,16 @@ class Player extends Human {
 	 * @returns {void}
 	 */
 	handleLogin(packet) {
-		if (packet.protocol !== Identifiers.CURRENT_PROTOCOL) {
-			if (packet.protocol < Identifiers.CURRENT_PROTOCOL) {
-				this.sendPlayStatus(PlayStatusPacket.LOGIN_FAILED_CLIENT, true);
-			} else {
-				this.sendPlayStatus(PlayStatusPacket.LOGIN_FAILED_SERVER, true);
-			}
-			
-			this.close(this.server.bluebirdlang.get("kick_incompatible_protocol"))
-			return;
-		}
 
 		this.username = TextFormat.clean(packet.username);
 		this.clientId = packet.clientId;
+
+		this.server.getLogger().info(`New connection from ${this.username} [/${this.connection.address.toString()}]`);
+
+		//if (packet.protocol !== Identifiers.CURRENT_PROTOCOL) {
+		//	this.close()
+		//	return;
+		//}	
 
 		if (packet.languageCode !== null) {
 			this.languageCode = packet.languageCode;
@@ -253,7 +250,7 @@ class Player extends Human {
 	onVerifyCompleted(packet, error, signedByMojang) {
 		let addr = this.server.purplebirdcfg.getNested("target.host");
 		let port = this.server.purplebirdcfg.getNested("target.port");
-		let prefix = this.server.purplebirdcfg.getNested("player.prefix");
+		let prefix = this.server.purplebirdcfg.getNested("players.prefix");
 		let ver = this.server.purplebirdcfg.getNested("target.version");
 		try {
 		if (error !== null) {
@@ -306,7 +303,6 @@ class Player extends Human {
 		packet3.forceServerPacks = false;
 		packet3.sendTo(this);
 
-		this.server.getLogger().info(`New connection from ${this.username} [/${this.connection.address.toString()}]`);
 		this.server.getLogger().info(`[PurpleBird] Creating connection, please wait...`);
 		
 		this.server.getLogger().debug(`
@@ -323,13 +319,29 @@ class Player extends Human {
 		  port: port,
 		  version: ver
 		})
-		
-		bot.once('spawn', this.server.getLogger().info(`[PurpleBird] Connection created`))
 
-		bot.on('kicked', this.close(reason.replace(`{"text":"`, "").replace(`"}`, "").replace(`"`, "").replace(`"`, "").replace(`\n`, "\n")))
-		bot.on('error', console.log)
+		bot.on('kicked', (reason) => {
+			let full;
+			if (!reason) {
+				full = this.server.bluebirdlang.get("kick_targeterror");
+			}
+			else {
+				full = reason.replace(`{"text":"`, "").replace(`"}`, "").replace(`"`, "").replace(`"`, "").replace(`\n`, "\n")
+			}
+			this.close("", full)
+			return;
+		})
+		bot.on('error', () => {
+			this.close("", this.server.bluebirdlang.get("kick_targeterror"))
+			return;
+		})
 		
-	} catch (e) {console.log(e)}
+		bot.once('spawn', () => {
+			this.server.getLogger().info(`[PurpleBird] Connection created`)
+		})
+
+		
+	} catch (e) { console.log(e) }
 	}
 
 	/**
@@ -340,13 +352,15 @@ class Player extends Human {
 		message = message.split("\n");
 		for (let i in message) {
 			let messageElement = message[i];
-			if (messageElement.trim() !== "" && messageElement.length <= 255) {
+			if (messageElement.trim() !== "" && messageElement.length < 255) {
 				if (messageElement.startsWith("/")) {
 					// Send AvailableCommandsPacket
 					return;
 				}
 				this.server.getLogger().info(`<${this.username}> ${messageElement}`);
-				this.server.broadcastMessage(`<${this.username}> ${messageElement}`);
+				try {
+					this.bot.chat(messageElement)
+				} catch (e) {}
 			}
 		}
 	}
@@ -439,9 +453,15 @@ class Player extends Human {
 	 * @param {string} reason
 	 * @param {bool} onlymsg
 	 */
-	close(message = "", reason = "No reason", onlymsg = false) {
-		this.server.getLogger().info("Player " + this.username + " disconnected due to " + reason);
-		this.server.broadcastMessage(message === "" ? `${TextFormat.GRAY}[${TextFormat.DARK_RED}-${TextFormat.GRAY}]${TextFormat.RESET}${TextFormat.WHITE} ${this.username}` : message);
+	close(message = "", reason, onlymsg = false) {
+		if (reason !== "client disconnection") {
+			this.server.getLogger().info("Player " + this.username + " disconnected due to " + reason);
+			this.server.getLogger().info("[PurpleBird] Disconnecting from server...");
+		}
+		try {
+			this.bot.quit()
+			this.server.getLogger().info("[PurpleBird] Disconnected!");
+		} catch (e) {}
 		if(onlymsg === false){
 			const pk = new DisconnectPacket();
 			pk.hideDisconnectionScreen = false;

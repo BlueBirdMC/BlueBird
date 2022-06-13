@@ -1,6 +1,5 @@
 {
   "name": "purplebird",
-  "version": "src/ServerInfo.js>>VERSION",
   "description": "A protocol transfer for Minecraft: Bedrock edition",
   "main": "src/BlueBird.js",
   "scripts": {
@@ -10,9 +9,9 @@
   "dependencies": {
     "bbmc-binarystream": "^1.0.0",
     "bbmc-raknet": "^1.0.2",
-    "mineflayer": "4.3.0"
+     "mineflayer": "4.3.0"
   },
-  "author": "BlueBirdMC Team",
+  "author": "PurpleBirdMC Team",
   "license": "GPL-3.0",
   "repository": {
     "type": "git",

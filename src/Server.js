@@ -57,7 +57,7 @@ class Server {
 	 * @param {string} serverVersion
 	 */
 	constructor(dataPath, serverName, serverVersion) {
-		if (Server.instance === null) {
+		if (!Server.instance) {
 			Server.instance = this;
 		}
 		this.logger = new Logger();
@@ -68,7 +68,7 @@ class Server {
 	}
 
 	static getInstance() {
-		if (Server.instance === null) {
+		if (!Server.instance) {
 			throw new Error("Instance is null");
 		}
 		return Server.instance();
@@ -83,15 +83,15 @@ class Server {
 		this.getLogger().info("Loading BlueBird.json");
 		if (!fs.existsSync("BlueBird.json")) {
 			let content = {
-				"motd": "BlueBird Server",
+				"motd": "PurpleBird Server",
 				"address": {
 					"name": "0.0.0.0",
 					"port": 19132,
 					"version": 4,
 				},
-				"maxplayers": 20,
+				"maxplayers": 69,
 				"debug_level": 0,
-				"xbox-auth": true,
+				"xbox-auth": true
 			};
 			fs.writeFileSync("BlueBird.json", JSON.stringify(content, null, 4));
 		}
@@ -121,7 +121,8 @@ class Server {
     				"kick_invalid_skin": "Invalid skin!",
     				"kick_incompatible_protocol": "Incompatible protocol",
     				"kick_kicked": "Kicked by {by}, reason: ${reason}",
-				"msg_skins_notsupported": "§cChanging skins are not supported."
+				"kick_targeterror": "Kicked due to target server is offline/invalid, check your config if you are an admin of this server, if you are player try reconnection after 5 minutes or contact server admin",
+				"msg_skins_notsupported": "§cChanging skins are not supported due to Java server limitations."
 			};
 			fs.writeFileSync("Lang.json", JSON.stringify(content, null, 4));
 		}
@@ -129,8 +130,8 @@ class Server {
 		this.bluebirdcfg = new Config("BlueBird.json", Config.TYPE_JSON);
 		this.purplebirdcfg = new PurpleConfig("PurpleBird.json", PurpleConfig.TYPE_JSON);
 		this.getLogger().info(`This server is running ${this.serverName}, v${this.serverVersion}`);
-		this.getLogger().warning(`[Purple Bird] Purple bird is still in early development, report bugs on our repo`)
-		this.getLogger().warning(`[Purple Bird] Currently ip forwarding is not supported!`)
+		this.getLogger().warning(`[PurpleBird] Purple bird is still in early development, report bugs on our repo`)
+		this.getLogger().warning(`[PurpleBird] Currently ip forwarding is not supported!`)
 		this.getLogger().info(`${this.serverName} is distributed under GPLv3 License`);
 		let addrname = this.bluebirdcfg.getNested("address.name");
 		let addrport = this.bluebirdcfg.getNested("address.port");
