@@ -114,6 +114,8 @@ class Player extends Human {
 		this.username = TextFormat.clean(packet.username);
 		this.clientId = packet.clientId;
 
+		this.server.getLogger().info(`New connection from ${this.username} [/${this.connection.address.toString()}]`);
+		
 		if (packet.protocol !== Identifiers.CURRENT_PROTOCOL) {
 			if (packet.protocol < Identifiers.CURRENT_PROTOCOL) {
 				this.sendPlayStatus(PlayStatusPacket.LOGIN_FAILED_CLIENT, true);
@@ -304,7 +306,6 @@ class Player extends Human {
 		packet3.forceServerPacks = false;
 		packet3.sendTo(this);
 
-		this.server.getLogger().info(`New connection from ${this.username} [/${this.connection.address.toString()}]`);
 		this.server.broadcastMessage(`${TextFormat.GRAY}[${TextFormat.DARK_GREEN}+${TextFormat.GRAY}]${TextFormat.RESET}${TextFormat.WHITE} ${this.username}`);
 	}
 
