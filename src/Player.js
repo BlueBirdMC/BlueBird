@@ -111,6 +111,9 @@ class Player extends Human {
 	 * @returns {void}
 	 */
 	handleLogin(packet) {
+		this.username = TextFormat.clean(packet.username);
+		this.clientId = packet.clientId;
+
 		if (packet.protocol !== Identifiers.CURRENT_PROTOCOL) {
 			if (packet.protocol < Identifiers.CURRENT_PROTOCOL) {
 				this.sendPlayStatus(PlayStatusPacket.LOGIN_FAILED_CLIENT, true);
@@ -122,9 +125,7 @@ class Player extends Human {
 			return;
 		}
 
-		this.username = TextFormat.clean(packet.username);
-		this.clientId = packet.clientId;
-
+		
 		if (packet.languageCode !== null) {
 			this.languageCode = packet.languageCode;
 		}
