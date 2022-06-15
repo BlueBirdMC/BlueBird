@@ -1,11 +1,16 @@
 ## Discord
 https://discord.gg/KQCYsxAD2b
 
-##      ***installation***
-git clone https://github.com/BlueBirdMC/BlueBird.git
+## Installation
+Tutorial:
 
-cd BlueBird
+Step 1. git clone https://github.com/BlueBirdMC/BlueBird.git
 
-npm i
+Step 2. cd BlueBird
 
-node start.js || vscode = f5
+Step 3. npm install
+
+Step 4. node start.js 
+Step 4. vscode f5
+
+Step 5. Die
