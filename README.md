@@ -12,5 +12,3 @@ Step 3. npm install
 
 Step 4. node start.js 
 Step 4. vscode f5
-
-Step 5. Die
