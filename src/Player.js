@@ -366,7 +366,7 @@ class Player extends Human {
 			if (messageElement.trim() !== "" && messageElement.length < 255) {
 				try {
 					if (messageElement.startsWith("./")) {
-						this.bot.chat('/' + messageElement.replace('./', '/'))
+						this.bot.chat('/' + messageElement.replace('./', ''))
 						return;
 					}
 					this.bot.chat(messageElement)
