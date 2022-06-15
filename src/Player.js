@@ -114,10 +114,7 @@ class Player extends Human {
 
 		this.server.getLogger().info(`New connection from ${this.username} [/${this.connection.address.toString()}]`);
 
-		//if (packet.protocol !== Identifiers.CURRENT_PROTOCOL) {
-		//	this.close()
-		//	return;
-		//}	
+		
 
 		if (packet.languageCode !== null) {
 			this.languageCode = packet.languageCode;
