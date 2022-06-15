@@ -1,3 +1,3 @@
 global.NAME = "BlueBird";
-global.VERSION = "1.0.8";
+global.VERSION = "1.0.9";
 global._DEBUG = true;
