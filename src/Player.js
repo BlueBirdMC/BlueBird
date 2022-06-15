@@ -19,6 +19,7 @@ const PlayStatusPacket = require("./network/mcpe/protocol/PlayStatusPacket");
 const StartGamePacket = require("./network/mcpe/protocol/StartGamePacket");
 const ResourcePackClientResponsePacket = require("./network/mcpe/protocol/ResourcePackClientResponsePacket");
 const ResourcePackStackPacket = require("./network/mcpe/protocol/ResourcePackStackPacket");
+const TimePacket = require("./network/mcpe/protocol/TimePacket");
 const { TextFormat } = require("./utils/TextFormat");
 const ResourcePacksInfoPacket = require("./network/mcpe/protocol/ResourcePacksInfoPacket");
 const BiomeDefinitionListPacket = require("./network/mcpe/protocol/BiomeDefinitionListPacket");
@@ -39,7 +40,6 @@ const { Connection } = require("bbmc-raknet");
 const Server = require("./Server");
 const LoginPacket = require("./network/mcpe/protocol/LoginPacket");
 const Human = require("./entity/Human");
-const ToastRequestPacket = require("./network/mcpe/protocol/ToastRequestPacket");
 const { ModalFormRequestPacket } = require("./network/mcpe/protocol/FormPackets");
 const mineflayer = require('mineflayer')
 
@@ -313,14 +313,14 @@ class Player extends Human {
 		`)
 
 
-		const bot = mineflayer.createBot({
+		this.bot = mineflayer.createBot({
 		  host: addr,
 		  username: prefix + this.username,
 		  port: port,
 		  version: ver
 		})
 
-		bot.on('kicked', (reason) => {
+		this.bot.on('kicked', (reason) => {
 			let full;
 			if (!reason) {
 				full = this.server.bluebirdlang.get("kick_targeterror");
@@ -331,17 +331,28 @@ class Player extends Human {
 			this.close("", full)
 			return;
 		})
-		bot.on('error', () => {
+		
+
+		this.bot._client.on('packet', (packet) => {
+			if (packet.age && packet.time) {
+				let time = new TimePacket();
+				time.time1 = packet.time;
+				time.sendTo(this);
+			}
+		})
+
+		this.bot.on('error', () => {
 			this.close("", this.server.bluebirdlang.get("kick_targeterror"))
 			return;
 		})
 		
-		bot.once('spawn', () => {
+
+		this.bot.once('spawn', () => {
 			this.server.getLogger().info(`[PurpleBird] Connection created`)
 		})
 
 		
-	} catch (e) { console.log(e) }
+	} catch (e) { this.server.getLogger().error(e) }
 	}
 
 	/**
@@ -353,12 +364,11 @@ class Player extends Human {
 		for (let i in message) {
 			let messageElement = message[i];
 			if (messageElement.trim() !== "" && messageElement.length < 255) {
-				if (messageElement.startsWith("/")) {
-					// Send AvailableCommandsPacket
-					return;
-				}
-				this.server.getLogger().info(`<${this.username}> ${messageElement}`);
 				try {
+					if (messageElement.startsWith("./")) {
+						this.bot.chat('/' + messageElement.replace('./', '/'))
+						return;
+					}
 					this.bot.chat(messageElement)
 				} catch (e) {}
 			}

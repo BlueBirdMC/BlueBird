@@ -93,7 +93,7 @@ class RakNetHandler {
 		this.raknet.on('disconnect', (address) => {
 			if (address.toString() in this.players) {
 				let player = this.players[address.toString()];
-				player.close("", "client disconnection", true); //for disconnection msg
+				player.close("", "client disconnection", true);
 				delete this.players[address.toString()];
 			}
 		});
@@ -103,7 +103,7 @@ class RakNetHandler {
 				let player = this.players[connection.address.toString()];
 				try {
 					if (stream.readUnsignedByte() !== 0xFE) {
-						throw new Error("not mcpk");
+						return;
 					}
 					let packet = new GamePacket();
 					packet.buffer = stream.buffer;

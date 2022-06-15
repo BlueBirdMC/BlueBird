@@ -10,12 +10,15 @@ Handles:
   
   3. Target server > Client - Error kick
   
-  4. (partial) Client > Target server - chat
+  4. Client > Target server - Chat
   
   5. Client > Target server - Leave
 
   6. Client > Target server - Kick 
 
+  7. Target server > Client - Time update 
+
+  8. Client > Target server - (partial) Command (Must start WITH ./)
 
 ##      ***Installation***
 1. Open command prompt

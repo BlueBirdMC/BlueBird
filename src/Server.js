@@ -91,7 +91,7 @@ class Server {
 				},
 				"maxplayers": 69,
 				"debug_level": 0,
-				"xbox-auth": true
+				"xbox-auth": false
 			};
 			fs.writeFileSync("BlueBird.json", JSON.stringify(content, null, 4));
 		}
@@ -101,8 +101,7 @@ class Server {
 				"target": {
 					"host": "localhost",
 					"port": 25565,
-					"version": "1.16.3",
-					"isqueryenabled": false
+					"version": "1.16.3"
 				},
 				"players": {
 					"tip": "Leave blank to disable!",
@@ -114,14 +113,14 @@ class Server {
 		this.getLogger().info("Loading Lang.json");
 		if (!fs.existsSync("Lang.json")) {
 			let content = {
-    				"kick_username_required": "Username is required",
-    				"kick_xbox_auth_required": "Please login into your Xbox account or else...",
-    				"kick_invalid_session": "Invalid session",
-    				"kick_resource_pack_required": "You must accept resource packs to join this server.",
-    				"kick_invalid_skin": "Invalid skin!",
-    				"kick_incompatible_protocol": "Incompatible protocol",
-    				"kick_kicked": "Kicked by {by}, reason: ${reason}",
-				"kick_targeterror": "Kicked due to target server is offline/invalid, check your config if you are an admin of this server, if you are player try reconnection after 5 minutes or contact server admin",
+				"kick_username_required": "Username is required",
+				"kick_xbox_auth_required": "Please login into your Xbox account or else...",
+				"kick_invalid_session": "Invalid session",
+				"kick_resource_pack_required": "You must accept resource packs to join this server.",
+				"kick_invalid_skin": "Invalid skin!",
+				"kick_incompatible_protocol": "Incompatible protocol",
+				"kick_kicked": "Kicked by {by}, reason: ${reason}",
+				"kick_targeterror": "Kicked due to target server is offline/invalid, check your config if you are an admin of this server, if you are player try reconnect after 5 minutes or contact server admin",
 				"msg_skins_notsupported": "§cChanging skins are not supported due to Java server limitations."
 			};
 			fs.writeFileSync("Lang.json", JSON.stringify(content, null, 4));
@@ -170,7 +169,7 @@ class Server {
 	getPlayerByPrefix(name) {
 		const player = this.getOnlinePlayers().find(player => player.getName().toLowerCase().startsWith(name.toLowerCase()));
 
-		if (player == false){
+		if (player == false) {
 			throw new Error(`Can't find player with name: ${name}`);
 		}
 
@@ -184,7 +183,7 @@ class Server {
 	getPlayerByName(name) {
 		const player = this.getOnlinePlayers().find(player => player.getName() === name);
 
-		if (player == false){
+		if (player == false) {
 			throw new Error(`Can't find player with name: ${name}`);
 		}
 

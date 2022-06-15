@@ -35,6 +35,7 @@ class Identifiers {
 	static TOAST_REQUEST_PACKET = 0xba;
 	static MODAL_FORM_REQUEST_PACKET = 0x64;
 	static MODAL_FORM_RESPONSE_PACKET = 0x65;
+	static TIME_PACKET = 0x0A;
 };
 
 module.exports = Identifiers;
