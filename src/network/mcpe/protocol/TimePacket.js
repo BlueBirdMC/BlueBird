@@ -8,12 +8,12 @@ const Identifiers = require("./Identifiers");
 class TimePacket extends DataPacket {
 	static NETWORK_ID = Identifiers.TIME_PACKET;
 
-	time = 17000;
+	time;
 
 	decodePayload() {}
 
 	encodePayload() {
-		this.writeSignedVarInt(this.time)
+		this.writeIntLE(this.time)
 	}
 }
 
