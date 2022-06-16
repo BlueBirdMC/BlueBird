@@ -1,6 +1,6 @@
 ## What is PurpleBird (PB)
 
-PurpleBird is a thing that allows people from bedrock mc join java servers (in early development, do not use on production servers)
+PurpleBird is a thing that allows people from bedrock Minecraft join Java minecraft servers (in early development, do not use on production servers)
 
 Handles:
 
