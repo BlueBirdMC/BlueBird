@@ -302,12 +302,6 @@ class Player extends Human {
 
 		this.server.getLogger().info(`[PurpleBird] Creating connection, please wait...`);
 		
-		this.server.getLogger().debug(`
-		ADDR: ${addr},
-		PORT: ${port},
-		PREFIX: ${prefix},
-		VER: ${ver}
-		`)
 
 
 		this.bot = mineflayer.createBot({
@@ -332,9 +326,9 @@ class Player extends Human {
 
 		this.bot._client.on('packet', (packet) => {
 			if (packet.age && packet.time) {
-				let time = new TimePacket();
-				time.time1 = packet.time;
-				time.sendTo(this);
+				let TimePacket = new TimePacket();
+				TimePacket.time = packet.time;
+				TimePacket.sendTo(this);
 			}
 		})
 
