@@ -5,7 +5,7 @@ const StopCommand = require("./default/StopCommand");
 const TitleCommand = require("./default/TitleCommand");
 
 class DefaultCommandLoader {
-    static init(server){
+    static init(server) {
         server.getCommandMap().registerArray([
             new StopCommand(),
             new SayCommand(),
