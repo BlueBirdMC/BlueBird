@@ -2,11 +2,11 @@ const { TextFormat } = require("../../utils/TextFormat");
 const Command = require("../Command");
 
 class HelpCommand extends Command {
-    constructor(){
+    constructor() {
         super("help", "get the help list");
     }
 
-    execute(sender, args){
+    execute(sender, args) { 
         let list = [];
         for(let commands of sender.getServer().getCommandMap().getCommands()){
             list.push(commands.getName() + "> " + commands.getDescription());
