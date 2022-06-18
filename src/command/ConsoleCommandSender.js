@@ -1,11 +1,11 @@
 const CommandSender = require("./CommandSender");
 
 class ConsoleCommandSender extends CommandSender {
-    sendMessage(message){
+    sendMessage (message) {
         this.getServer().getLogger().info(message);
     }
 
-    getName(){
+    getName() {
         return "Console";
     }
 }
