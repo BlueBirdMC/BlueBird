@@ -29,7 +29,7 @@ class NetworkBinaryStream extends require("bbmc-binarystream") {
 	}
 
 	/**
-	 * @param {stirng} v
+	 * @param {string} v
 	 */
 	writeString(v) {
 		this.writeVarInt(Buffer.byteLength(v));
