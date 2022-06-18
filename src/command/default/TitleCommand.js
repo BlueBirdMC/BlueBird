@@ -9,12 +9,12 @@ class TitleCommand extends Command {
 
     execute(sender, args) {
         let server = sender.getServer();
-        if(args.length < 3){
+        if(args.length < 3) {
             server.getLogger().info(TextFormat.RED + "/title <type> <player name> <message>");
             return;
         }
         let type;
-        switch(args[0]){
+        switch (args[0]) {
             case "title":
                 type = SetTitlePacket.TYPE_SET_TITLE;
                 break;
@@ -36,7 +36,7 @@ class TitleCommand extends Command {
                 break;
         }
         let player = server.getPlayerByPrefix(args[1]);
-        if(player !== null && player.isConnected()){
+        if (player !== null && player.isConnected()) {
             player.sendTitleText(args.slice(2).join(" "), type);
         }
     }
