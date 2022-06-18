@@ -1,17 +1,17 @@
 class CommandSender {
     server;
 
-    constructor(server){
+    constructor(server) {
         this.server = server;
     }
 
-    sendMessage(message){}
+    sendMessage (message) { }
 
-    getServer(){
+    getServer() {
         return this.server;
     }
 
-    getName(){
+    getName() {
         return "CommandSender";
     }
 }
