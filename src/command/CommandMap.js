@@ -13,62 +13,62 @@ class CommandMap {
         }
     }
 
-    unregister(commandName){
-        if(commandName in CommandMap.list){
+    unregister(commandName) {
+        if(commandName in CommandMap.list) {
             delete CommandMap.list[commandName];
         }
     }
 
-    registerArray(arr){
+    registerArray(arr) {
         arr.forEach(commands => {
-            if(!(commands.getName() in CommandMap.list)){
+            if(!(commands.getName() in CommandMap.list)) {
                 CommandMap.list[commands.getName()] = commands;
             }
         });
     }
 
-    unregisterArray(arr){
+    unregisterArray(arr) {
         arr.forEach(commandNames => {
-            if (commandNames in CommandMap.list){
+            if (commandNames in CommandMap.list) {
                 delete CommandMap.list[commandNames];
             }
         });
     }
 
-    has(commandName){
-        if(!(commandName in CommandMap.list)){
+    has(commandName) {
+        if (!(commandName in CommandMap.list)) {
             return false;
         }
         return this.get(commandName) !== false;
     }
 
-    get(commandName){
-        if(!(commandName in CommandMap.list)){
+    get(commandName) {
+        if (!(commandName in CommandMap.list)) {
             return false;
         }
         return CommandMap.list[commandName];
     }
 
-    getCommands(){
+    getCommands() {
         return Object.values(CommandMap.list);
     }
 
     dispatch(sender, cmd){
-        if(cmd === "")return;
+        if(!cmd) return;
         cmd = cmd.split(" ");
         let args = cmd;
         cmd = cmd.shift();
 
-        if(this.has(cmd)){
+        if (this.has(cmd)) {
             let command = this.get(cmd);
             if(sender instanceof CommandSender || sender instanceof Player){
                 command.execute(sender, args);
             }
-        }else{
-            if(cmd.trim() === "" && sender instanceof ConsoleCommandSender){
+        } else {
+            if (!cmd.trim() && sender instanceof ConsoleCommandSender) {
                 return;
             }
-            sender.getServer().getLogger().info(TextFormat.DARK_RED + "Unknown command. type 'help' to get list of commands");
+            sender.getServer().getLogger().info(TextFormat.DARK_RED + "Unknown command. Type 'help' to get list of commands");
         }
     }
 }
