@@ -8,8 +8,8 @@ class SayCommand extends Command {
     }
 
     execute(sender, args) {
-        if(args.length < 1){
-            if(sender instanceof ConsoleCommandSender){
+        if (args.length < 1) {
+            if(sender instanceof ConsoleCommandSender) {
                 sender.sendMessage(TextFormat.RED + "/say <message>");
             }
             return;
