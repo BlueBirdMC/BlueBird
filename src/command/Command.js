@@ -2,20 +2,20 @@ class Command {
     name;
     description;
 
-    constructor(name, description){
+    constructor (name, description) {
         this.name = name;
         this.description = description;
     }
 
-    getName(){
+    getName() {
         return this.name;
     }
 
-    getDescription(){
+    getDescription() {
         return this.description;
     }
 
-    execute(sender, args){}
+    execute(sender, args) { }
 }
 
 module.exports = Command;
