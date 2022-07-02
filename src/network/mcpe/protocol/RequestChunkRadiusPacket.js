@@ -19,6 +19,7 @@ const Identifiers = require("./Identifiers");
 class RequestChunkRadiusPacket extends DataPacket {
     static NETWORK_ID = Identifiers.REQUEST_CHUNK_RADIUS_PACKET;
 
+    /** @type {number} */
     radius;
 
     decodePayload() {

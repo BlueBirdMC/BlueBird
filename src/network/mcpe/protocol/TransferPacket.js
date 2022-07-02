@@ -19,7 +19,10 @@ const Identifiers = require("./Identifiers");
 class TransferPacket extends DataPacket {
 	static NETWORK_ID = Identifiers.TRANSFER_PACKET;
 
+	/** @type {string} */
 	address = "";
+
+	/** @type {number} */
 	port = 19132;
 
 	decodePayload() {
@@ -29,7 +32,7 @@ class TransferPacket extends DataPacket {
 
 	encodePayload() {
 		this.writeString(this.address);
-		this.writeIntLE(this.port);
+		this.writeUnsignedIntLE(this.port);
 	}
 }
 

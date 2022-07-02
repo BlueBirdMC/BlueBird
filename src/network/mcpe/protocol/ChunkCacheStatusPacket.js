@@ -19,6 +19,7 @@ const Identifiers = require("./Identifiers");
 class ChunkCacheStatusPacket extends DataPacket {
     static NETWORK_ID = Identifiers.CHUNK_CACHE_STATUS_PACKET;
 
+    /** @type {boolean} */
     enabled;
 
     decodePayload() {

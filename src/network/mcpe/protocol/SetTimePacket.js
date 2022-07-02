@@ -19,6 +19,7 @@ const Identifiers = require("./Identifiers");
 class SetTimePacket extends DataPacket {
     static NETWORK_ID = Identifiers.SET_TIME_PACKET;
 
+    /** @type {number} */
     time;
 
     decodePayload() {

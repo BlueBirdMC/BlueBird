@@ -19,7 +19,10 @@ const Identifiers = require("./Identifiers");
 class TickSyncPacket extends DataPacket {
 	static NETWORK_ID = Identifiers.TICK_SYNC_PACKET;
 
+    /** @type {bigint} */
     clientRequestTimestamp;
+
+    /** @type {bigint} */
     serverReceptionTimestamp;
 
 	decodePayload() {
