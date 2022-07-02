@@ -31,7 +31,7 @@ const { ModalFormRequestPacket, ModalFormResponsePacket } = require("./FormPacke
 const TransferPacket = require("./TransferPacket");
 const TickSyncPacket = require("./TickSyncPacket");
 const RequestChunkRadiusPacket = require("./RequestChunkRadiusPacket");
-const ChunkCacheStatusPacket = require("./ChunkCacheStatusPacket");
+const ClientCacheStatusPacket = require("./ClientCacheStatusPacket");
 
 class PacketPool {
 
@@ -56,9 +56,8 @@ class PacketPool {
 		this.register(TickSyncPacket);
 		this.register(ModalFormRequestPacket);
 		this.register(ModalFormResponsePacket);
-
 		this.register(RequestChunkRadiusPacket);
-		this.register(ChunkCacheStatusPacket);
+		this.register(ClientCacheStatusPacket);
 	}
 
 	static register(packet) {
