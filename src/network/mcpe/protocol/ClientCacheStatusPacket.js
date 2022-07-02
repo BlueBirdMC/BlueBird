@@ -16,8 +16,8 @@
 const DataPacket = require("./DataPacket");
 const Identifiers = require("./Identifiers");
 
-class ChunkCacheStatusPacket extends DataPacket {
-    static NETWORK_ID = Identifiers.CHUNK_CACHE_STATUS_PACKET;
+class ClientCacheStatusPacket extends DataPacket {
+    static NETWORK_ID = Identifiers.CLIENT_CACHE_STATUS_PACKET;
 
     /** @type {boolean} */
     enabled;
@@ -31,4 +31,4 @@ class ChunkCacheStatusPacket extends DataPacket {
     }
 }
 
-module.exports = ChunkCacheStatusPacket;
+module.exports = ClientCacheStatusPacket;
