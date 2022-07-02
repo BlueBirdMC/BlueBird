@@ -35,6 +35,11 @@ class Identifiers {
 	static TOAST_REQUEST_PACKET = 0xba;
 	static MODAL_FORM_REQUEST_PACKET = 0x64;
 	static MODAL_FORM_RESPONSE_PACKET = 0x65;
+	static TRANSFER_PACKET = 0x55;
+	static TICK_SYNC_PACKET = 0x17;
+	static REQUEST_CHUNK_RADIUS_PACKET = 0x45;
+	static CHUNK_CACHE_STATUS_PACKET = 0x81;
+	static SET_TIME_PACKET = 0x0A;
 }
 
 module.exports = Identifiers;
