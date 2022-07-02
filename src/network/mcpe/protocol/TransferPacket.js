@@ -27,7 +27,7 @@ class TransferPacket extends DataPacket {
 
 	decodePayload() {
 		this.address = this.readString();
-		this.port = this.readShortLE();
+		this.port = this.readUnsignedIntLE();
 	}
 
 	encodePayload() {
