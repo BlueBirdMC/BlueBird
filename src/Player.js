@@ -111,7 +111,7 @@ class Player extends Human {
 	 * @returns {void}
 	 */
 	handleLogin(packet) {
-		this.username = TextFormat.clean(packet.username);
+		this.username = TextFormat.clean(packet.username).replace(" ", "_");
 		this.clientId = packet.clientId;
 
 		this.server.getLogger().info(`New connection from ${this.username} [/${this.connection.address.toString()}]`);
