@@ -34,8 +34,8 @@ class StartGamePacket extends DataPacket {
 		this.writeFloatLE(this.server.bluebirdcfg.getNested("etc.player_y")); // Player y
 		this.writeFloatLE(this.server.bluebirdcfg.getNested("etc.player_z")); // PLayer z
 
-		this.writeFloatLE(this.server.bluebirdcfg.getNested("etc.pitch")); // Pitch
-		this.writeFloatLE(this.server.bluebirdcfg.getNested("etc.yaw")); // Yaw
+		this.writeFloatLE(this.server.bluebirdcfg.getNested("etc.player_pitch")); // Pitch
+		this.writeFloatLE(this.server.bluebirdcfg.getNested("etc.player_yaw")); // Yaw
 
 		this.writeLongLE(0n); // Seed
 		this.writeShortLE(0); // Biome type
