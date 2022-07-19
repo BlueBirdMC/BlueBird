@@ -91,6 +91,9 @@ class Server {
 					"port": 19132,
 					"version": 4,
 				},
+				"etc": {
+					"gamemode": ""
+				},
 				"maxplayers": 20,
 				"debug_level": 0,
 				"xbox-auth": true
@@ -122,11 +125,25 @@ class Server {
 		let addrname = this.bluebirdcfg.getNested("address.name");
 		let addrport = this.bluebirdcfg.getNested("address.port");
 		let addrversion = this.bluebirdcfg.getNested("address.version");
-		this.raknet = new RakNetHandler(this, addrname, addrport, addrversion);
+		try {
+			this.raknet = new RakNetHandler(this, addrname, addrport, addrversion);
+		} catch (e) {
+			this.getLogger().critical(`Raknet failed to start. Is the address configured correctly?`)
+			this.getLogger().critical(`Unable to start server.`)
+			process.exit(1)
+		}
 		if (this.raknet.raknet.isRunning === true) {
 			this.raknet.handle();
 		}
 
+		if (!this.bluebirdcfg.getNested("etc.gamemode")) {
+			// Check if the config is from 1.0.10
+			this.getLogger().warning(`[CONFIG ERROR] Your config is outdated!`);
+			this.getLogger().warning(`[CONFIG ERROR] missing 'etc' category`)
+			this.getLogger().critical(`Unable to start server.`)
+			process.exit(1)
+		};
+		
 		this.getLogger().info(`Server listened on ${addrname}:${addrport}, Address-Version: ${addrversion}`);
 
 		DefaultCommandLoader.init(this);
