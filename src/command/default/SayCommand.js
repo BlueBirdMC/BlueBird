@@ -4,7 +4,7 @@ const ConsoleCommandSender = require("../ConsoleCommandSender");
 
 class SayCommand extends Command {
     constructor() {
-        super("say", "broadcast a message to the players");
+        super("say", "Broadcast a message to the players");
     }
 
     execute(sender, args) {
