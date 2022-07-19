@@ -264,10 +264,10 @@ class Player extends Human {
 		let xuid = packet.xuid;
 
 		if (!signedByMojang && xuid) {
-			this.server.getLogger().info(`${this.username} has an XUID, but his login keychain is not signed by microsoft`);
 			this.authorized = false;
-			if (this.server.bluebirdlang.get("xbox-auth") === true) {
+			if (this.server.bluebirdcfg.get("xbox-auth") === true) {
 				this.server.getLogger().debug(`${this.username} is not logged into Xbox Live`);
+				this.server.getLogger().warning(`${this.username} has an XUID, but his login keychain is not signed by microsoft`);
 				this.close(this.server.bluebirdlang.get("kick_xbox_auth_required"));
 				return;
 			}
@@ -281,9 +281,9 @@ class Player extends Human {
 
 		if (!xuid || !xuid instanceof String) {
 			if (signedByMojang) {
-				this.server.getLogger().warning(`${this.username} tried to join without XUID`);
 				this.authorized = false;
-				if (this.server.bluebirdlang.get("xbox-auth") === true) {
+				if (this.server.bluebirdcfg.get("xbox-auth") === true) {
+					this.server.getLogger().warning(`${this.username} tried to join without XUID`);
 					this.close(this.server.bluebirdlang.get("kick_xbox_auth_required"));
 					return;
 				}
