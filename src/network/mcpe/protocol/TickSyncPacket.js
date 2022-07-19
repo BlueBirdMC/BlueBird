@@ -17,7 +17,7 @@ const DataPacket = require("./DataPacket");
 const Identifiers = require("./Identifiers");
 
 class TickSyncPacket extends DataPacket {
-	static NETWORK_ID = Identifiers.TICK_SYNC_PACKET;
+    static NETWORK_ID = Identifiers.TICK_SYNC_PACKET;
 
     /** @type {bigint} */
     clientRequestTimestamp;
@@ -27,7 +27,7 @@ class TickSyncPacket extends DataPacket {
 
 	decodePayload() {
 		this.clientRequestTimestamp = this.readLongLE();
-        this.serverReceptionTimestamp = this.readLongLE();
+     	        this.serverReceptionTimestamp = this.readLongLE();
 	}
 
 	encodePayload() {
