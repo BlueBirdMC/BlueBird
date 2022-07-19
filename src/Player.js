@@ -328,17 +328,17 @@ class Player extends Human {
 							case "toast":
 								let pk = new ToastRequestPacket();
 								pk.settings = {
-									title: "Gay Tester",
-									body: "Choose Yes or No"
+									title: "Gay detected",
+									body: "gay detected"
 								};
-								pk.sendTo(this);
+								pk.sendTo(this); // not tested if it works
 								break;
 							case "kickme":
 								this.close("", this.server.bluebirdlang.get("kick_xbox_auth_required"));
 								break;
 							case "form":
 								let form = new ModalFormRequestPacket();
-								form.id = 555;
+								form.id = 1;
 								form.content = JSON.stringify({
 									type: "modal",
 									title: "Does you're mom knows that u are gay?",
