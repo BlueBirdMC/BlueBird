@@ -97,7 +97,7 @@ class Server {
 			},
 			Lang: {
 				"kick_username_required": "Username is required",
-				"kick_xbox_auth_required": "Please login into your Xbox account or else...",
+				"kick_xbox_auth_required": "Please login into your Xbox account or else.",
 				"kick_invalid_session": "Invalid session",
 				"kick_resource_pack_required": "You must accept resource packs to join this server.",
 				"kick_invalid_skin": "Invalid skin!",
@@ -121,7 +121,7 @@ class Server {
 		this.getLogger().info(`${this.serverName} is distributed under GPLv3 License`);
 		let addrname = this.bluebirdcfg.getNested("address.name");
 		let addrport = this.bluebirdcfg.getNested("address.port");
-		let addrversion = this.bluebirdcfg.getNested("address.version"); // dont use config on here (u just wait)
+		let addrversion = this.bluebirdcfg.getNested("address.version");
 		this.raknet = new RakNetHandler(this, addrname, addrport, addrversion);
 		if (this.raknet.raknet.isRunning === true) {
 			this.raknet.handle();
