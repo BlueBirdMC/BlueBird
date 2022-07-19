@@ -54,21 +54,21 @@ class CommandMap {
     }
 
     dispatch(sender, cmd){
-        if(cmd === "")return;
+        if (!cmd) return;
         cmd = cmd.split(" ");
         let args = cmd;
         cmd = cmd.shift();
 
         if(this.has(cmd)){
             let command = this.get(cmd);
-            if(sender instanceof CommandSender || sender instanceof Player){
+            if (sender instanceof CommandSender || sender instanceof Player) {
                 command.execute(sender, args);
             }
-        }else{
-            if(cmd.trim() === "" && sender instanceof ConsoleCommandSender){
+        } else {
+            if(!cmd.trim() && sender instanceof ConsoleCommandSender){
                 return;
             }
-            sender.getServer().getLogger().info(TextFormat.DARK_RED + "Unknown command. type 'help' to get list of commands");
+            sender.getServer().getLogger().info(TextFormat.DARK_RED + "Unknown command. Type 'help' to get list of commands");
         }
     }
 }
