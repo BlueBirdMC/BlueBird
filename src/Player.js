@@ -40,6 +40,9 @@ const Server = require("./Server");
 const LoginPacket = require("./network/mcpe/protocol/LoginPacket");
 const Human = require("./entity/Human");
 const ToastRequestPacket = require("./network/mcpe/protocol/ToastRequestPacket");
+const TransferPacket = require("./network/mcpe/protocol/TransferPacket");
+const TickSyncPacket = require("./network/mcpe/protocol/TickSyncPacket");
+const TimePacket = require("./network/mcpe/protocol/SetTimePacket");
 const { ModalFormRequestPacket } = require("./network/mcpe/protocol/FormPackets");
 
 class Player extends Human {
@@ -234,10 +237,10 @@ class Player extends Human {
 				break;
 
 			case ResourcePackClientResponsePacket.STATUS_COMPLETED:
-				const packet1 = new StartGamePacket();
-				packet1.entityId = this.id;
-				packet1.entityRuntimeId = this.id;
-				packet1.sendTo(this);
+				const startpacket = new StartGamePacket();
+				startpacket.entityId = this.id;
+				startpacket.entityRuntimeId = this.id;
+				startpacket.sendTo(this);
 
 				const [biome_pk, creative_ct_pk] = [new BiomeDefinitionListPacket(), new CreativeContentPacket()];
 				biome_pk.sendTo(this);
@@ -300,11 +303,13 @@ class Player extends Human {
 
 		this.sendPlayStatus(PlayStatusPacket.LOGIN_SUCCESS);
 
-		const packet3 = new ResourcePacksInfoPacket();
-		packet3.resourcePackEntries = [];
-		packet3.mustAccept = false;
-		packet3.forceServerPacks = false;
-		packet3.sendTo(this);
+		const rpinfo = new ResourcePacksInfoPacket();
+		rpinfo.resourcePackEntries = [];
+		rpinfo.mustAccept = false;
+		rpinfo.forceServerPacks = false;
+		rpinfo.sendTo(this);
+		
+		
 
 		this.server.broadcastMessage(`${TextFormat.GRAY}[${TextFormat.DARK_GREEN}+${TextFormat.GRAY}]${TextFormat.RESET}${TextFormat.WHITE} ${this.username}`);
 	}
@@ -323,6 +328,17 @@ class Player extends Human {
 					return;
 				}
 				if (_DEBUG) {
+					if (messageElement === "!time ") {
+						const time = messageElement.replace("!time ", "")
+						if (!parseInt(time)) {
+							this.sendMessage("error while changing time. make sure u entered a valid time and u are not a gay")
+							return
+						}
+						this.sendMessage("changed")
+						const timepk = new TimePacket();
+						timepk.time = parseInt(time);
+						timepk.sendTo(this)
+					}
 					if (messageElement.startsWith(".")) {
 						switch (messageElement.split(".")[1]) {
 							case "toast":
@@ -335,6 +351,12 @@ class Player extends Human {
 								break;
 							case "kickme":
 								this.close("", this.server.bluebirdlang.get("kick_xbox_auth_required"));
+								break;
+							case "transferme":
+								this.sendMessage("ok, one sec")
+								setTimeout(() => {
+									transfer("bfsdbfndsbfmnsdbfnsmdbfshafbshjgfshjfsdjrdksjfsdjflkdfjsdklfjs.com", 19132)
+								}, 1000)
 								break;
 							case "form":
 								let form = new ModalFormRequestPacket();
@@ -358,6 +380,20 @@ class Player extends Human {
 		}
 	}
 
+	// (c) @andriycraft 2022 - 2069
+	/**
+	 * @param {string} ip
+	 * @param {number} port
+	 */
+	transfer(ip, port = 19132) {
+		
+		const tr = new TransferPacket();
+		rpinfo.address = ip;
+		rpinfo.port = port;
+		rpinfo.sendTo(this);
+		
+	}
+	
 	/**
 	 * @param {string} message 
 	 */
