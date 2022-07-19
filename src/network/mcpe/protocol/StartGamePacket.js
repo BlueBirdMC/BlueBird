@@ -28,27 +28,27 @@ class StartGamePacket extends DataPacket {
 	encodePayload() {
 		this.writeSignedVarLong(this.entityId); // Entity id
 		this.writeVarLong(this.entityRuntimeId); // Runtime entity id
-		this.writeSignedVarInt(1); // Player gamemode
+		this.writeSignedVarInt(this.server.bluebirdcfg.getNested("etc.gamemode")); // Player gamemode
 
-		this.writeFloatLE(0.0); // Player x
-		this.writeFloatLE(4.0); // Player y
-		this.writeFloatLE(0.0); // PLayer z
+		this.writeFloatLE(this.server.bluebirdcfg.getNested("etc.player_x")); // Player x
+		this.writeFloatLE(this.server.bluebirdcfg.getNested("etc.player_y")); // Player y
+		this.writeFloatLE(this.server.bluebirdcfg.getNested("etc.player_z")); // PLayer z
 
-		this.writeFloatLE(0.0); // Pitch
-		this.writeFloatLE(0.0); // Yaw
+		this.writeFloatLE(this.server.bluebirdcfg.getNested("etc.pitch")); // Pitch
+		this.writeFloatLE(this.server.bluebirdcfg.getNested("etc.yaw")); // Yaw
 
 		this.writeLongLE(0n); // Seed
 		this.writeShortLE(0); // Biome type
 		this.writeString(""); // Biome name
-		this.writeSignedVarInt(0); // Dimension
+		this.writeSignedVarInt(this.server.bluebirdcfg.getNested("etc.spawn_dimension")); // Dimension
 		this.writeSignedVarInt(1); // Generator
-		this.writeSignedVarInt(1); // World gamemode
-		this.writeSignedVarInt(0); // Difficulty
-		this.writeSignedVarInt(0); // Spawn x
-		this.writeVarInt(4); // Spawn y
-		this.writeSignedVarInt(0); // Spawn z
+		this.writeSignedVarInt(this.server.bluebirdcfg.getNested("etc.world_gamemode")); // World gamemode
+		this.writeSignedVarInt(this.server.bluebirdcfg.getNested("etc.difficulty")); // Difficulty
+		this.writeSignedVarInt(this.server.bluebirdcfg.getNested("etc.spawn_x")); // Spawn x
+		this.writeVarInt(this.server.bluebirdcfg.getNested("etc.spawn_y")); // Spawn y
+		this.writeSignedVarInt(this.server.bluebirdcfg.getNested("etc.spawn_z")); // Spawn z
 		this.writeBool(true); // Achievements Disabled
-		this.writeSignedVarInt(0); // Day Cycle Stop Time
+		this.writeSignedVarInt(this.server.bluebirdcfg.getNested("etc.stoptime")); // Day Cycle Stop Time
 		this.writeSignedVarInt(0); // Edu offser
 		this.writeBool(false); // Edu features enabled
 		this.writeString(""); // Edu product uuid
@@ -59,14 +59,14 @@ class StartGamePacket extends DataPacket {
 		this.writeBool(true); // Broadcast to lan
 		this.writeSignedVarInt(4); // Xbox live broadcast mode
 		this.writeSignedVarInt(4); // Platform broadcast mode
-		this.writeBool(true); // Enable commands
-		this.writeBool(false); // Are texture packs required
+		this.writeBool(this.server.bluebirdcfg.getNested("etc.enable_commands")); // Enable commands
+		this.writeBool(this.server.bluebirdcfg.getNested("etc.texturepacksrequired")); // Are texture packs required
 		this.writeVarInt(0); // Game rules count
 		this.writeIntLE(0); // Experiments count
 		this.writeBool(false); // Experiments previously used
 		this.writeBool(false); // Bonus chest enabled
 		this.writeBool(false); // Map enabled
-		this.writeSignedVarInt(1); // Permission level
+		this.writeSignedVarInt(this.server.bluebirdcfg.getNested("etc.permission_level")); // Permission level
 		this.writeIntLE(0); // Server chunk tick range
 		this.writeBool(false); // Has locked behavior pack
 		this.writeBool(false); // Has locked texture pack
@@ -98,7 +98,7 @@ class StartGamePacket extends DataPacket {
 		this.writeVarInt(0); // Item states count
 
 		this.writeString(""); // Multiplayer correction id
-		this.writeBool(false); // Server authoritative inventory
+		this.writeBool(this.server.bluebirdcfg.getNested("etc.server_auth_inventory")); // Server authoritative inventory
 		this.writeString("BlueBird"); // Engine
 		this.write(Buffer.from([0x0a, 0x00, 0x00])); // player properties
 		this.writeLongLE(0n); // Block palette checksum
