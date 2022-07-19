@@ -151,7 +151,7 @@ class Server {
 		if (this.raknet.raknet.isRunning === true) {
 			this.raknet.handle();
 		}
-console.log(this.bluebirdcfg.getNested("etc.gamemode"))
+		//console.log(this.bluebirdcfg.getNested("etc.gamemode"))
 		if (!this.bluebirdcfg.getNested("etc.gamemode") && !this.bluebirdcfg.getNested("etc.gamemode") === 0) {
 			// Check if the config is from 1.0.10
 			this.getLogger().warning(`[CONFIG ERROR] Your config is outdated!`);
