@@ -40,6 +40,7 @@ class Identifiers {
 	static REQUEST_CHUNK_RADIUS_PACKET = 0x45;
 	static CLIENT_CACHE_STATUS_PACKET = 0x81;
 	static SET_TIME_PACKET = 0x0A;
+	static AVAILABLE_COMMANDS_PACKET = 0x4C;
 }
 
 module.exports = Identifiers;

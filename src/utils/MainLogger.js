@@ -17,7 +17,7 @@ const { TextFormat } = require("./TextFormat");
 
 class MainLogger {
 	/** @type {number} */
-	#debuggingLevel = 0;
+	#debuggingLevel = 3;
 
 	/**
 	 * @param {string} message 

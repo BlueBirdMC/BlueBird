@@ -91,25 +91,6 @@ class Server {
 					"port": 19132,
 					"version": 4,
 				},
-				"etc": {
-					"gamemode": 0,
-					"player_x": 4.0,
-					"player_y": 10.0,
-					"player_z": 4.0,
-					"player_yaw": 0.0,
-					"player_pitch": 0.0,
-					"spawn_dimension": 3,
-					"world_gamemode": 0,
-					"difficulty": 1,
-					"spawn_x": 4.0,
-					"spawn_y": 10.0,
-					"spawn_z": 4.0,
-					"stoptime": 0,
-					"enable_commands": true,
-					"texturepacksrequired": false,
-					"permission_level": 2,
-					"server_auth_inventory": false,
-				},
 				"maxplayers": 20,
 				"debug_level": 0,
 				"xbox-auth": true
@@ -151,16 +132,9 @@ class Server {
 		if (this.raknet.raknet.isRunning === true) {
 			this.raknet.handle();
 		}
-		//console.log(this.bluebirdcfg.getNested("etc.gamemode"))
-		if (!this.bluebirdcfg.getNested("etc.gamemode") && !this.bluebirdcfg.getNested("etc.gamemode") === 0) {
-			// Check if the config is from 1.0.10
-			this.getLogger().warning(`[CONFIG ERROR] Your config is outdated!`);
-			this.getLogger().warning(`[CONFIG ERROR] missing 'etc' category`)
-			this.getLogger().critical(`Unable to start server.`)
-			process.exit(1)
-		};
+
 		
-		this.getLogger().info(`Server listened on ${addrname}:${addrport}, Address-Version: ${addrversion}`);
+		this.getLogger().info(`Server listened on ${addrname}:${addrport}`);
 
 		DefaultCommandLoader.init(this);
 
