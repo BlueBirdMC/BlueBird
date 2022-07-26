@@ -53,13 +53,13 @@ class Skin {
             throw new Error("Skin id must not be empty");
         }
 
-        const [accpeted_sizes, length] = [[4096, 4102, 8192, 16384, 65536], this.#skinData.length];
+        const [accpeted_sizes, length] = [[4102, 8192, 16384, 65536], this.#skinData.length];
         if(accpeted_sizes.includes(length) === false) {
             throw new Error(`Invalid skin data size ${length} bytes (allowed sizes: ${accpeted_sizes.join(', ')})`);
         }
 
-        if(this.#capeData !== "" && this.#capeData.length !== 4096) {
-            throw new Error("Invalid cape data size " + this.#capeData.length + " bytes (must be exactly 4096 bytes)");
+        if(this.#capeData !== "" && this.#capeData.length !== 4102) {
+            throw new Error("Invalid cape data size " + this.#capeData.length + " bytes (must be exactly 4102 bytes)");
         }
 
         if(this.#geometryData !== ""){
