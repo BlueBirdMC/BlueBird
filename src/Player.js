@@ -106,8 +106,8 @@ class Player extends Human {
 			return;
 		}
 
-		// this.setSkin(skin);
-		// this.sendSkin();
+		this.setSkin(skin);
+		this.sendSkin();
 	}
 
 
