@@ -264,9 +264,7 @@ class Player extends Human {
 				this.server.getLogger().debug(`${this.id}`);
 				startpacket.entityId = this.id;
 				startpacket.entityRuntimeId = this.id;
-				console.log('%o', startpacket)
 				startpacket.sendTo(this);
-				console.log('%o', startpacket)
 
 
 				const [biome_pk, creative_ct_pk] = [new BiomeDefinitionListPacket(), new CreativeContentPacket()];
@@ -275,9 +273,6 @@ class Player extends Human {
 
 				this.sendPlayStatus(PlayStatusPacket.PLAYER_SPAWN);
 				this.server.getLogger().debug(`rp done`);
-				console.log('%o', startpacket)
-				console.log('%o', biome_pk)
-				console.log('%o', creative_ct_pk)
 				break;
 		}
 	}
