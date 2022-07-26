@@ -3,6 +3,7 @@ const KickCommand = require("./default/KickCommand");
 const SayCommand = require("./default/SayCommand");
 const StopCommand = require("./default/StopCommand");
 const TitleCommand = require("./default/TitleCommand");
+const SayRawCommand = require("./default/SayRawCommand");
 
 class DefaultCommandLoader {
     static init(server){
@@ -11,7 +12,8 @@ class DefaultCommandLoader {
             new SayCommand(),
             new TitleCommand(),
             new HelpCommand(),
-            new KickCommand()
+            new KickCommand(),
+	    new SayRawCommand()
         ]);
     }
 }

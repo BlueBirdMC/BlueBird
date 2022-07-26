@@ -97,7 +97,7 @@ class Server {
 			},
 			Lang: {
 				"kick_username_required": "Username is required",
-				"kick_xbox_auth_required": "Please login into your Xbox account or else...",
+				"kick_xbox_auth_required": "Please login into your Xbox account or else.",
 				"kick_invalid_session": "Invalid session",
 				"kick_resource_pack_required": "You must accept resource packs to join this server.",
 				"kick_invalid_skin": "Invalid skin!",
@@ -121,13 +121,20 @@ class Server {
 		this.getLogger().info(`${this.serverName} is distributed under GPLv3 License`);
 		let addrname = this.bluebirdcfg.getNested("address.name");
 		let addrport = this.bluebirdcfg.getNested("address.port");
-		let addrversion = this.bluebirdcfg.getNested("address.version"); // dont use config on here (u just wait)
-		this.raknet = new RakNetHandler(this, addrname, addrport, addrversion);
+		let addrversion = this.bluebirdcfg.getNested("address.version");
+		try {
+			this.raknet = new RakNetHandler(this, addrname, addrport, addrversion);
+		} catch (e) {
+			this.getLogger().critical(`Raknet failed to start. Is the address configured correctly?`)
+			this.getLogger().critical(`Unable to start server.`)
+			process.exit(1)
+		}
 		if (this.raknet.raknet.isRunning === true) {
 			this.raknet.handle();
 		}
 
-		this.getLogger().info(`Server listened on ${addrname}:${addrport}, Address-Version: ${addrversion}`);
+		
+		this.getLogger().info(`Server listened on ${addrname}:${addrport}`);
 
 		DefaultCommandLoader.init(this);
 

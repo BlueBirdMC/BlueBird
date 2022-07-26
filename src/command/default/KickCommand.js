@@ -3,7 +3,7 @@ const Command = require("../Command");
 
 class KickCommand extends Command {
 	constructor() {
-		super("kick", "kick someone");
+		super("kick", "To kick someone");
 	}
 
 	execute(sender, args) {

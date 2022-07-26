@@ -3,7 +3,7 @@ const Command = require("../Command");
 
 class HelpCommand extends Command {
     constructor(){
-        super("help", "get the help list");
+        super("help", "Get the help");
     }
 
     execute(sender, args){

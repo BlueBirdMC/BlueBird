@@ -40,6 +40,10 @@ const Server = require("./Server");
 const LoginPacket = require("./network/mcpe/protocol/LoginPacket");
 const Human = require("./entity/Human");
 const ToastRequestPacket = require("./network/mcpe/protocol/ToastRequestPacket");
+const TransferPacket = require("./network/mcpe/protocol/TransferPacket");
+const TickSyncPacket = require("./network/mcpe/protocol/TickSyncPacket");
+const AvailableCommandsPacket = require("./network/mcpe/protocol/AvailableCommandsPacket")
+const TimePacket = require("./network/mcpe/protocol/SetTimePacket");
 const { ModalFormRequestPacket } = require("./network/mcpe/protocol/FormPackets");
 
 class Player extends Human {
@@ -102,40 +106,50 @@ class Player extends Human {
 			return;
 		}
 
-		// this.setSkin(skin);
-		// this.sendSkin();
+		this.setSkin(skin);
+		this.sendSkin();
 	}
+
+
 
 	/**
 	 * @param {LoginPacket} packet 
 	 * @returns {void}
 	 */
 	handleLogin(packet) {
+		this.server.getLogger().debug(`first login`)
+
 		this.username = TextFormat.clean(packet.username);
+		this.server.getLogger().debug(`first login: ${this.username}`)
 		this.clientId = packet.clientId;
+		this.server.getLogger().debug(`first login: ${this.username}, ${this.clientId}`)
 
 		this.server.getLogger().info(`New connection from ${this.username} [/${this.connection.address.toString()}]`);
-		
+
+
+		this.server.getLogger().debug(`protocol check`)
 		if (packet.protocol !== Identifiers.CURRENT_PROTOCOL) {
 			if (packet.protocol < Identifiers.CURRENT_PROTOCOL) {
 				this.sendPlayStatus(PlayStatusPacket.LOGIN_FAILED_CLIENT, true);
 			} else {
 				this.sendPlayStatus(PlayStatusPacket.LOGIN_FAILED_SERVER, true);
 			}
-			
+
 			this.close(this.server.bluebirdlang.get("kick_incompatible_protocol"));
 			return;
 		}
 
-		
+		this.server.getLogger().debug(`packet lang check`)
 		if (packet.languageCode !== null) {
 			this.languageCode = packet.languageCode;
 		}
+		this.server.getLogger().debug(`Lang: ${this.languageCode}`)
 
 		this.uuid = UUID.fromString(packet.clientUUID);
+		this.server.getLogger().debug(`uuid: ${this.uuid}`)
 
 		let animations = [];
-
+		this.server.getLogger().debug(`animations: ${animations}`)
 		packet.clientData["AnimatedImageData"].forEach(animation => {
 			animations.push(new SkinAnimation(
 				new SkinImage(
@@ -202,10 +216,11 @@ class Player extends Human {
 			skin = SkinAdapterSingleton.get().fromSkinData(skinData);
 			skin.validate();
 		} catch (e) {
-			console.log(e);
+			this.server.getLogger().warning(`${e}`)
 			this.close(this.server.bluebirdlang.get("kick_invalid_skin"));
 			return;
 		}
+		this.server.getLogger().debug(`skin reading finished`)
 
 		// this.changeSkin(skin, "", "");
 		this.setSkin(skin);
@@ -218,6 +233,7 @@ class Player extends Human {
 	 * @returns {Boolean}
 	 */
 	handleResourcePackClientResponse(packet) {
+		if (_DEBUG) { console.log(packet) }
 		switch (packet.status) {
 			case ResourcePackClientResponsePacket.STATUS_REFUSED:
 				this.close(this.server.bluebirdlang.get("kick_resource_pack_required"));
@@ -227,23 +243,36 @@ class Player extends Human {
 				break;
 
 			case ResourcePackClientResponsePacket.STATUS_HAVE_ALL_PACKS:
-				const packet = new ResourcePackStackPacket();
-				packet.resourcePackStack = [];
-				packet.mustAccept = false;
-				packet.sendTo(this);
+				const rpstack = new ResourcePackStackPacket();
+				rpstack.resourcePackStack = [];
+				rpstack.mustAccept = false;
+				rpstack.sendTo(this);
 				break;
 
 			case ResourcePackClientResponsePacket.STATUS_COMPLETED:
-				const packet1 = new StartGamePacket();
-				packet1.entityId = this.id;
-				packet1.entityRuntimeId = this.id;
-				packet1.sendTo(this);
+				console.log(this.server.bluebirdcfg.getNested("etc.gamemode"))
+
+				console.log(this.server.bluebirdcfg.getNested("etc.player_x"))
+				console.log(this.server.bluebirdcfg.getNested("etc.player_y"))
+				console.log(this.server.bluebirdcfg.getNested("etc.player_z"))
+
+				console.log(this.server.bluebirdcfg.getNested("etc.player_pitch"))
+				console.log(this.server.bluebirdcfg.getNested("etc.player_yaw"))
+				console.log(this.server.bluebirdcfg.getNested("etc.spawn_dimension"))
+				console.log(this.server.bluebirdcfg.getNested("etc.world_gamemode"))
+				const startpacket = new StartGamePacket();
+				this.server.getLogger().debug(`${this.id}`);
+				startpacket.entityId = this.id;
+				startpacket.entityRuntimeId = this.id;
+				startpacket.sendTo(this);
+
 
 				const [biome_pk, creative_ct_pk] = [new BiomeDefinitionListPacket(), new CreativeContentPacket()];
 				biome_pk.sendTo(this);
 				creative_ct_pk.sendTo(this);
 
 				this.sendPlayStatus(PlayStatusPacket.PLAYER_SPAWN);
+				this.server.getLogger().debug(`rp done`);
 				break;
 		}
 	}
@@ -299,15 +328,29 @@ class Player extends Human {
 		this.loggedIn = true;
 
 		this.sendPlayStatus(PlayStatusPacket.LOGIN_SUCCESS);
+		this.server.getLogger().debug(`${this.username} - rp info`);
+		const rpinfo = new ResourcePacksInfoPacket();
+		rpinfo.resourcePackEntries = [];
+		rpinfo.mustAccept = false;
+		rpinfo.forceServerPacks = false;
+		rpinfo.sendTo(this);
 
-		const packet3 = new ResourcePacksInfoPacket();
-		packet3.resourcePackEntries = [];
-		packet3.mustAccept = false;
-		packet3.forceServerPacks = false;
-		packet3.sendTo(this);
+
 
 		this.server.broadcastMessage(`${TextFormat.GRAY}[${TextFormat.DARK_GREEN}+${TextFormat.GRAY}]${TextFormat.RESET}${TextFormat.WHITE} ${this.username}`);
 	}
+	// (c) @andriycraft 2022 - 2069
+	/**
+	 * @param {string} ip
+	 * @param {number} port
+	 */
+	 transfer(ip, port = 19132) {
+		const tr = new TransferPacket();
+		tr.address = ip;
+		tr.port = port;
+		tr.sendTo(this);
+	}
+
 
 	/**
 	 * @param {string} message 
@@ -319,26 +362,45 @@ class Player extends Human {
 			let messageElement = message[i];
 			if (messageElement.trim() !== "" && messageElement.length <= 255) {
 				if (messageElement.startsWith("/")) {
-					// Send AvailableCommandsPacket
+					// (c) andriycraft
+					const cmd = new AvailableCommandsPacket();
+					cmd.sendTo(this)
 					return;
 				}
 				if (_DEBUG) {
+					if (messageElement === "!time ") {
+						const time = messageElement.replace("!time ", "")
+						if (!parseInt(time)) {
+							this.sendMessage("error while changing time. make sure u entered a valid time and u are not a gay")
+							return
+						}
+						this.sendMessage("changed")
+						const timepk = new TimePacket();
+						timepk.time = parseInt(time);
+						timepk.sendTo(this)
+					}
 					if (messageElement.startsWith(".")) {
 						switch (messageElement.split(".")[1]) {
 							case "toast":
 								let pk = new ToastRequestPacket();
 								pk.settings = {
-									title: "Gay Tester",
-									body: "Choose Yes or No"
+									title: "Gay detected",
+									body: "gay detected"
 								};
-								pk.sendTo(this);
+								pk.sendTo(this); // not tested if it works
 								break;
 							case "kickme":
 								this.close("", this.server.bluebirdlang.get("kick_xbox_auth_required"));
 								break;
+							case "transferme":
+								this.sendMessage("ok, one sec")
+								setTimeout(() => {
+									this.transfer("bfsdbfndsbfmnsdbfnsmdbfshafbshjgfshjfsdjrdksjfsdjflkdfjsdklfjs.com", 19132)
+								}, 1000)
+								break;
 							case "form":
 								let form = new ModalFormRequestPacket();
-								form.id = 555;
+								form.id = 1;
 								form.content = JSON.stringify({
 									type: "modal",
 									title: "Does you're mom knows that u are gay?",
@@ -357,6 +419,8 @@ class Player extends Human {
 			}
 		}
 	}
+
+
 
 	/**
 	 * @param {string} message 
@@ -449,7 +513,7 @@ class Player extends Human {
 	close(message = "", reason = "No reason", onlymsg = false) {
 		this.server.getLogger().info("Player " + this.username + " disconnected due to " + reason);
 		this.server.broadcastMessage(message === "" ? `${TextFormat.GRAY}[${TextFormat.DARK_RED}-${TextFormat.GRAY}]${TextFormat.RESET}${TextFormat.WHITE} ${this.username}` : message);
-		if(onlymsg === false){
+		if (onlymsg === false) {
 			const pk = new DisconnectPacket();
 			pk.hideDisconnectionScreen = false;
 			pk.message = reason;
@@ -458,7 +522,7 @@ class Player extends Human {
 		}
 	}
 
-	kick(reason, by){
+	kick(reason, by) {
 		this.close("", this.server.bluebirdlang.get("kick_kicked").replace("${by}", by).replace("${reason}", reason));
 	}
 
